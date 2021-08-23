@@ -1,0 +1,7 @@
+.pytest_cache/
+
+media/
+
+.coverage
+.coveragerc
+.env

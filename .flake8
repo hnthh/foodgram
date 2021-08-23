@@ -1,0 +1,18 @@
+[flake8]
+
+ignore = F402, F403, F405, F811, N802, N803, N806, W503
+
+exclude =
+    */migrations/,
+    venv/,
+    env/
+
+per-file-ignores =
+    */settings/__init__.py:F401
+    */apps.py:F401
+    */tests/*:E501, JS101
+    backend/config/components/*:E501
+    backend/recipes/decorators.py:R504
+    backend/recipes/management/commands/load_ingredients.py:SIM115
+
+max-complexity = 10

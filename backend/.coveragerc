@@ -1,0 +1,18 @@
+[run]
+
+omit =
+    tests/*
+    */settings/*
+    */migrations/*
+    */__init__.py
+    config/asgi.py
+    config/wsgi.py
+    */apps.py
+    */urls.py
+    */admin.py
+    manage.py
+    conftest.py
+
+[report]
+
+skip_empty = true
