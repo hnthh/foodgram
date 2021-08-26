@@ -1,20 +1,5 @@
-pip-tools
+-c requirements.txt
 
-django
-django-cors-headers
-django-environ
-django-filter
-django-split-settings
-djangorestframework
-drf-extra-fields
-
-djoser
-
-Pillow
-reportlab
-
-gunicorn
-psycopg2-binary
 nano
 
 pytest

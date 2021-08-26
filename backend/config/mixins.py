@@ -1,6 +1,5 @@
-from rest_framework.permissions import AllowAny
-
 from config.permissions import NotGranted
+from rest_framework.permissions import AllowAny
 
 
 class MultiPermissionViewSetMixin:

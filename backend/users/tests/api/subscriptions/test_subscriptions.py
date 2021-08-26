@@ -1,5 +1,4 @@
 import pytest
-
 from recipes.tests.share import create_recipes
 from users.tests.share import create_user_api
 

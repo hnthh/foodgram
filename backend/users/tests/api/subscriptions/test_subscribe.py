@@ -1,5 +1,4 @@
 import pytest
-
 from recipes.models import Recipe
 from recipes.tests.share import create_recipes
 from users.models import Subscribe

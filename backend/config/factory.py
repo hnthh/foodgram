@@ -1,9 +1,8 @@
 from io import BytesIO
 
+from config.testing import register
 from django.core.files.uploadedfile import SimpleUploadedFile
 from PIL import Image
-
-from config.testing import register
 
 
 @register

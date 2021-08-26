@@ -1,5 +1,4 @@
 import pytest
-
 from users.models import Subscribe
 
 pytestmark = [pytest.mark.django_db]

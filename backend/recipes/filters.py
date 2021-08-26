@@ -1,5 +1,4 @@
 import django_filters as filters
-
 from recipes.decorators import recipe_filter_bool_param
 from recipes.models import Ingredient, Recipe, Tag
 

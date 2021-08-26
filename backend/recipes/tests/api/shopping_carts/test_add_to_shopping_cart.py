@@ -1,5 +1,4 @@
 import pytest
-
 from recipes.models import ShoppingCart
 from recipes.tests.share import create_recipes
 

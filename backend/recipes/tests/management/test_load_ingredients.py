@@ -1,5 +1,4 @@
 import pytest
-
 from recipes.models import Ingredient
 
 pytestmark = [pytest.mark.django_db]

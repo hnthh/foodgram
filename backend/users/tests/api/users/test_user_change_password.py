@@ -1,5 +1,4 @@
 import pytest
-
 from users.tests.share import auth_client, create_user_api
 
 pytestmark = [pytest.mark.django_db]

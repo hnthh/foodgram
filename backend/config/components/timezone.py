@@ -1,2 +1,5 @@
-TIME_ZONE = 'UTC'
-USE_TZ = True
+from config.components.environ import env
+
+USE_TZ = False
+
+TIME_ZONE = env.str('TIME_ZONE', default='Europe/Moscow')

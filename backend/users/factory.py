@@ -1,7 +1,6 @@
+from config.testing import register
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
-
-from config.testing import register
 
 User = get_user_model()
 

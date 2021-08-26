@@ -1,5 +1,4 @@
 import pytest
-
 from recipes.models import RecipeIngredient
 from recipes.tests.share import create_recipes
 

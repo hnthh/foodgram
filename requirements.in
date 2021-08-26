@@ -1,0 +1,16 @@
+django
+django-cors-headers
+django-environ
+django-split-settings
+
+djangorestframework
+drf-extra-fields
+django-filter
+
+djoser
+
+Pillow
+reportlab
+
+gunicorn
+psycopg2-binary

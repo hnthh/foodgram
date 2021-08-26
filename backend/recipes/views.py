@@ -1,22 +1,12 @@
 import io
 
+from config.mixins import MultiPermissionViewSetMixin
+from config.permissions import IsAuthor
+from config.settings import SITE_ROOT
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum
 from django.http import FileResponse
 from django_filters.rest_framework import DjangoFilterBackend
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfgen import canvas
-from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-
-from config.mixins import MultiPermissionViewSetMixin
-from config.permissions import IsAuthor
-from config.settings import SITE_ROOT
 from recipes.filters import IngredientFilter, RecipeFilter
 from recipes.models import (
     Favorite,
@@ -34,6 +24,15 @@ from recipes.serializers import (
     ShoppingCartSerializer,
     TagSerializer,
 )
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen import canvas
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):

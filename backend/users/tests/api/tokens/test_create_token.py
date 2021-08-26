@@ -1,6 +1,5 @@
 import pytest
 from rest_framework.authtoken.models import Token
-
 from users.tests.share import create_user_api
 
 pytestmark = [pytest.mark.django_db]

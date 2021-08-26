@@ -1,6 +1,5 @@
-from rest_framework.generics import get_object_or_404
-
 from recipes.models import Ingredient, RecipeIngredient
+from rest_framework.generics import get_object_or_404
 
 
 def recipe_create_update(func):

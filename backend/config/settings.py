@@ -1,6 +1,5 @@
-from split_settings.tools import include
-
 from config.components.environ import env, root
+from split_settings.tools import include
 
 SITE_ROOT = root()
 

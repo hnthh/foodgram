@@ -1,5 +1,4 @@
 import pytest
-
 from config.testing.factory import FixtureFactory
 
 
