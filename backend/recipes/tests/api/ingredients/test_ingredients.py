@@ -24,10 +24,8 @@ def test_filter_by_name(
     as_anon,
     load_ingredients_command_exec,
 ):
-    got = as_anon.get(URL, {'search': {'абри'}})
-
-    assert len(got)
-    assert got[4]['name'].startswith('абри')
+    got = as_anon.get(URL, {'name': {'прип'}})
+    assert got[2]['name'].startswith('припра')
 
 
 def test_method_not_allowed(as_user):

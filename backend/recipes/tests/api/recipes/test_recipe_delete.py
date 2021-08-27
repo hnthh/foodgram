@@ -19,6 +19,5 @@ def test_not_found(as_user):
     as_user.delete(url, expected_status=404)
 
 
-def test_anon(as_anon, as_user, ingredients, tags):
-    recipe, _ = create_recipes(as_user, ingredients, tags)
+def test_anon(as_anon, recipe):
     as_anon.delete(f'/api/recipes/{recipe.id}/', expected_status=401)

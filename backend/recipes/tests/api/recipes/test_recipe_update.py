@@ -48,6 +48,5 @@ def test_ok(as_user, ingredients, tags):
     assert got['image'].startswith('http://tests')
 
 
-def test_anon(as_anon, as_user, ingredients, tags):
-    recipe, _ = create_recipes(as_user, ingredients, tags)
+def test_anon(as_anon, recipe):
     as_anon.put(f'/api/recipes/{recipe.id}/', expected_status=401)

@@ -1,6 +1,5 @@
 import pytest
 from recipes.models import ShoppingCart
-from recipes.tests.share import create_recipes
 
 pytestmark = [pytest.mark.django_db]
 
@@ -12,9 +11,7 @@ RESPONSE_FIELDS = (
 )
 
 
-def test_ok(as_user, user, ingredients, tags):
-    recipe, _ = create_recipes(as_user, ingredients, tags)
-
+def test_ok(as_user, user, recipe):
     url = f'/api/recipes/{recipe.id}/shopping_cart/'
 
     got = as_user.get(url, expected_status=201)
@@ -27,9 +24,7 @@ def test_ok(as_user, user, ingredients, tags):
     assert got['image'].startswith('http://tests')
 
 
-def test_add_twice(as_user, ingredients, tags):
-    recipe, _ = create_recipes(as_user, ingredients, tags)
-
+def test_add_twice(as_user, recipe):
     url = f'/api/recipes/{recipe.id}/shopping_cart/'
 
     as_user.get(url, expected_status=201)

@@ -3,7 +3,7 @@ import pytest
 pytestmark = [pytest.mark.django_db]
 
 
-def test_ok(as_user, as_admin, user, admin):
+def test_ok(as_user, admin):
     url = f'/api/users/{admin.id}/'
 
     got = as_user.get(url)

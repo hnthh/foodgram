@@ -28,6 +28,11 @@ def recipe(factory):
 
 
 @pytest.fixture()
+def recipes(factory):
+    return factory.recipes()
+
+
+@pytest.fixture()
 def load_ingredients_command_exec():
     return call_command('load_ingredients')
 

@@ -1,13 +1,12 @@
 import pytest
-from recipes.tests.share import create_recipes
 
 pytestmark = [pytest.mark.django_db]
 
 URL = '/api/recipes/download_shopping_cart/'
 
 
-def test_ok(as_user, ingredients, tags):
-    recipe, another_recipe = create_recipes(as_user, ingredients, tags)
+def test_ok(as_user, recipes):
+    recipe, another_recipe = recipes
 
     as_user.get(
         f'/api/recipes/{recipe.id}/shopping_cart/',
