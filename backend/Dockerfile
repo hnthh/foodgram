@@ -2,7 +2,7 @@ FROM python:3.8.5
 
 WORKDIR /code
 
-COPY ../backend/requirements.in ../backend/Makefile ./
+COPY ../backend/requirements.in ../Makefile ./
 RUN make deps && apt-get update && apt-get install nano
 COPY ../backend/ .
 

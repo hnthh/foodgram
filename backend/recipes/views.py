@@ -6,7 +6,6 @@ from config.settings import SITE_ROOT
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum
 from django.http import FileResponse
-from django_filters.rest_framework import DjangoFilterBackend
 from recipes.filters import IngredientFilter, RecipeFilter
 from recipes.models import (
     Favorite,
@@ -39,10 +38,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = (AllowAny,)
-    filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
-
     pagination_class = None
 
 
@@ -50,7 +46,6 @@ class TagViewSet(ReadOnlyModelViewSet):
 
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (AllowAny,)
     pagination_class = None
 
 
@@ -68,7 +63,6 @@ class RecipeViewSet(MultiPermissionViewSetMixin, ModelViewSet):
         'shopping_cart': (IsAuthenticated,),
         'download_shopping_cart': (IsAuthenticated,),
     }
-    filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
     def get_serializer_class(self):
