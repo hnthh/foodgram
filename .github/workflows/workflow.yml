@@ -17,16 +17,16 @@ jobs:
           python-version: 3.8
 
       - name: Manage deps
-        run: cd backend && make deps
+        run: make deps
 
       - name: Apply isort, flake8
-        run: cd backend && make lint
+        run: make lint
 
       - name: Test with PyTest
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           SQLITE_DATABASE_URL: ${{ secrets.SQLITE_DATABASE_URL }}
-        run: cd backend && pytest
+        run: make test
 
   push_to_docker_hub:
     name: Push Docker image to DockerHub
