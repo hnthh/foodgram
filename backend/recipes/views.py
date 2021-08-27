@@ -3,9 +3,9 @@ import io
 from config.mixins import MultiPermissionViewSetMixin
 from config.permissions import IsAuthor
 from config.settings import SITE_ROOT
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum
 from django.http import FileResponse
+from recipes.decorators import recipe_favorite_shoppingcart_actions
 from recipes.filters import IngredientFilter, RecipeFilter
 from recipes.models import (
     Favorite,
@@ -26,11 +26,9 @@ from recipes.serializers import (
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
-from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 
@@ -78,54 +76,22 @@ class RecipeViewSet(MultiPermissionViewSetMixin, ModelViewSet):
         detail=True,
         serializer_class=FavoriteSerializer,
     )
+    @recipe_favorite_shoppingcart_actions
     def favorite(self, request, pk):
-        user = request.user
-        if request.method == 'DELETE':
-            recipe = get_object_or_404(Recipe, pk=pk)
-            try:
-                Favorite.objects.get(user=user, recipe=recipe).delete()
-            except ObjectDoesNotExist:
-                return Response(
-                    {'errors': 'FavoriteObject does not exist'},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
-        data = {'user': user.pk, 'recipe': pk}
-        serializer = self.get_serializer(
-            data=data,
-            context={'request': request},
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        recipe = get_object_or_404(Recipe, pk=pk)
+        Favorite.objects.get(user=request.user, recipe=recipe).delete()
 
     @action(
         methods=['get', 'delete'],
         detail=True,
         serializer_class=ShoppingCartSerializer,
     )
+    @recipe_favorite_shoppingcart_actions
     def shopping_cart(self, request, pk):
-        user = request.user
-        if request.method == 'DELETE':
-            recipe = get_object_or_404(Recipe, pk=pk)
-            try:
-                ShoppingCart.objects.get(user=user, recipe=recipe).delete()
-            except ObjectDoesNotExist:
-                return Response(
-                    {'errors': 'ShoppingCartObject does not exist'},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
-        data = {'user': user.pk, 'recipe': pk}
-        serializer = self.get_serializer(
-            data=data,
-            context={'request': request},
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        recipe = get_object_or_404(Recipe, pk=pk)
+        return ShoppingCart.objects.get(
+            user=request.user, recipe=recipe,
+        ).delete()
 
     @action(detail=False)
     def download_shopping_cart(self, request):
