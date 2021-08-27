@@ -1,6 +1,8 @@
+from config.validators import GtMinValueValidator
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import MaxValueValidator, RegexValidator
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
@@ -83,7 +85,8 @@ class RecipeIngredient(models.Model):
         decimal_places=1,
         max_digits=5,
         validators=[
-            MinValueValidator(0.1),
+            GtMinValueValidator(0),
+            MaxValueValidator(5000, _("That's too much, man!")),
         ],
     )
 

@@ -23,6 +23,11 @@ def tags(factory):
 
 
 @pytest.fixture()
+def recipe(factory):
+    return factory.recipe()
+
+
+@pytest.fixture()
 def load_ingredients_command_exec():
     return call_command('load_ingredients')
 

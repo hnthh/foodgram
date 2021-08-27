@@ -38,3 +38,11 @@ def tags(self, **kwargs):
         ),
         **kwargs,
     )
+
+
+@register
+def recipe(self, **kwargs):
+    return self.mixer.blend(
+        'recipes.Recipe',
+        **kwargs,
+    )
