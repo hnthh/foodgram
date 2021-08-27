@@ -18,8 +18,8 @@ class Command(BaseCommand):
         with file:
             reader = csv.reader(file)
 
-            for row in reader:
-                Ingredient.objects.get_or_create(
-                    name=row[0],
-                    measurement_unit=row[1],
-                )
+            ingredients = [
+                Ingredient(**dict(zip(('name', 'measurement_unit'), row)))
+                for row in reader
+            ]
+            Ingredient.objects.bulk_create(ingredients, ignore_conflicts=True)
