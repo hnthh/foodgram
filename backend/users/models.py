@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import F
 
 
 class User(AbstractUser):
@@ -36,6 +37,10 @@ class Subscribe(models.Model):
 
     class Meta:
         constraints = (
+            models.CheckConstraint(
+                name='user_not_author',
+                check=~models.Q(user=F('author')),
+            ),
             models.UniqueConstraint(
                 fields=('user', 'author'),
                 name='unique_user_author',
