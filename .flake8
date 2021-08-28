@@ -13,6 +13,6 @@ per-file-ignores =
     */tests/*:E501, JS101
     backend/config/components/*:E501
     backend/recipes/decorators.py:R504
-    backend/recipes/management/commands/load_ingredients.py:SIM115
+    backend/ingredients/management/commands/load_ingredients.py:SIM115
 
 max-complexity = 10

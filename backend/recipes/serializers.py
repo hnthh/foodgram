@@ -2,7 +2,6 @@ from drf_extra_fields.fields import Base64ImageField
 from recipes.decorators import recipe_create_update
 from recipes.models import (
     Favorite,
-    Ingredient,
     Recipe,
     RecipeIngredient,
     ShoppingCart,
@@ -18,17 +17,6 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'name', 'color', 'slug')
-
-
-class IngredientSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Ingredient
-        fields = (
-            'id',
-            'name',
-            'measurement_unit',
-        )
 
 
 class AddIngredientSerializer(serializers.Serializer):

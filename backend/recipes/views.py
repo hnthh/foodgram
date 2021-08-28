@@ -6,10 +6,9 @@ from config.settings import SITE_ROOT
 from django.db.models import Sum
 from django.http import FileResponse
 from recipes.decorators import recipe_favorite_shoppingcart_actions
-from recipes.filters import IngredientFilter, RecipeFilter
+from recipes.filters import RecipeFilter
 from recipes.models import (
     Favorite,
-    Ingredient,
     Recipe,
     RecipeIngredient,
     ShoppingCart,
@@ -17,7 +16,6 @@ from recipes.models import (
 )
 from recipes.serializers import (
     FavoriteSerializer,
-    IngredientSerializer,
     RecipeCreateSerializer,
     RecipeSerializer,
     ShoppingCartSerializer,
@@ -30,14 +28,6 @@ from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-
-
-class IngredientViewSet(ReadOnlyModelViewSet):
-
-    queryset = Ingredient.objects.all()
-    serializer_class = IngredientSerializer
-    filterset_class = IngredientFilter
-    pagination_class = None
 
 
 class TagViewSet(ReadOnlyModelViewSet):

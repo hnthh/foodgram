@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from ingredients.models import Ingredient
 
 User = get_user_model()
 
@@ -38,22 +39,6 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class Ingredient(models.Model):
-    name = models.CharField(max_length=128)
-    measurement_unit = models.CharField(max_length=64)
-
-    class Meta:
-        constraints = (
-            models.UniqueConstraint(
-                fields=('name', 'measurement_unit'),
-                name='unique_ingredient_measurementunit',
-            ),
-        )
-
-    def __str__(self):
-        return f'{self.name}'
 
 
 class Recipe(models.Model):

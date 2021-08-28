@@ -3,7 +3,6 @@ from django.db import models
 from django.forms import CheckboxSelectMultiple
 from recipes.models import (
     Favorite,
-    Ingredient,
     Recipe,
     RecipeIngredient,
     ShoppingCart,
@@ -19,11 +18,6 @@ class TagAdmin(admin.ModelAdmin):
 class RecipeIngredientInline(admin.StackedInline):
     model = RecipeIngredient
     extra = 1
-
-
-@admin.register(Ingredient)
-class IngredientAdmin(admin.ModelAdmin):
-    pass
 
 
 @admin.register(Recipe)

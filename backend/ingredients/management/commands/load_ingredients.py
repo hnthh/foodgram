@@ -1,7 +1,7 @@
 import csv
 
 from django.core.management.base import BaseCommand, CommandError
-from recipes.models import Ingredient
+from ingredients.models import Ingredient
 
 
 class Command(BaseCommand):
@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            file = open('recipes/data/ingredients.csv')
+            file = open('ingredients/data/ingredients.csv')
         except OSError:
             raise CommandError(
                 'Could not open ingredients.csv file',

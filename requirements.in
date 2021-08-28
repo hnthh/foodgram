@@ -1,4 +1,5 @@
 django
+django-behaviors
 django-cors-headers
 django-environ
 django-split-settings

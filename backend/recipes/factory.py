@@ -2,20 +2,6 @@ from config.testing import register
 
 
 @register
-def ingredient(self, **kwargs):
-    return self.mixer.blend('recipes.Ingredient', **kwargs)
-
-
-@register
-def ingredients(self, **kwargs):
-    return self.mixer.cycle(2).blend(
-        'recipes.Ingredient', name=(
-            name for name in ('яблочко', 'грушечка')
-        ), **kwargs,
-    )
-
-
-@register
 def tag(self, **kwargs):
     return self.mixer.blend(
         'recipes.Tag',

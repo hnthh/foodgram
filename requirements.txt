@@ -32,6 +32,8 @@ django==3.2.6
     #   djangorestframework
     #   djangorestframework-simplejwt
     #   drf-extra-fields
+django-behaviors==0.5.1
+    # via -r requirements.in
 django-cors-headers==3.8.0
     # via -r requirements.in
 django-environ==0.4.5
