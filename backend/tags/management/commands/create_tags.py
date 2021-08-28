@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 from django.core.management.base import BaseCommand
-from recipes.models import Tag
+from tags.models import Tag
 
 TagNamed = namedtuple('TagNamed', 'name color slug')
 

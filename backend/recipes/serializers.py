@@ -1,22 +1,11 @@
 from drf_extra_fields.fields import Base64ImageField
 from recipes.decorators import recipe_create_update
-from recipes.models import (
-    Favorite,
-    Recipe,
-    RecipeIngredient,
-    ShoppingCart,
-    Tag,
-)
+from recipes.models import Favorite, Recipe, RecipeIngredient, ShoppingCart
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
+from tags.models import Tag
+from tags.serializers import TagSerializer
 from users.serializers import UserSerializer
-
-
-class TagSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Tag
-        fields = ('id', 'name', 'color', 'slug')
 
 
 class AddIngredientSerializer(serializers.Serializer):

@@ -3,8 +3,10 @@ pytest_plugins = [
     'config.fixtures',
     'ingredients.factory',
     'ingredients.fixtures',
-    'users.factory',
-    'users.fixtures',
     'recipes.factory',
     'recipes.fixtures',
+    'tags.factory',
+    'tags.fixtures',
+    'users.factory',
+    'users.fixtures',
 ]

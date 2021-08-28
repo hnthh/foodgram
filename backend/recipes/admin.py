@@ -1,18 +1,7 @@
 from django.contrib import admin
 from django.db import models
 from django.forms import CheckboxSelectMultiple
-from recipes.models import (
-    Favorite,
-    Recipe,
-    RecipeIngredient,
-    ShoppingCart,
-    Tag,
-)
-
-
-@admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
-    pass
+from recipes.models import Favorite, Recipe, RecipeIngredient, ShoppingCart
 
 
 class RecipeIngredientInline(admin.StackedInline):

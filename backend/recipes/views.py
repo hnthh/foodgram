@@ -7,19 +7,12 @@ from django.db.models import Sum
 from django.http import FileResponse
 from recipes.decorators import recipe_favorite_shoppingcart_actions
 from recipes.filters import RecipeFilter
-from recipes.models import (
-    Favorite,
-    Recipe,
-    RecipeIngredient,
-    ShoppingCart,
-    Tag,
-)
+from recipes.models import Favorite, Recipe, RecipeIngredient, ShoppingCart
 from recipes.serializers import (
     FavoriteSerializer,
     RecipeCreateSerializer,
     RecipeSerializer,
     ShoppingCartSerializer,
-    TagSerializer,
 )
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
@@ -27,14 +20,7 @@ from reportlab.pdfgen import canvas
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-
-
-class TagViewSet(ReadOnlyModelViewSet):
-
-    queryset = Tag.objects.all()
-    serializer_class = TagSerializer
-    pagination_class = None
+from rest_framework.viewsets import ModelViewSet
 
 
 class RecipeViewSet(MultiPermissionViewSetMixin, ModelViewSet):

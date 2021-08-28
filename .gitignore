@@ -88,6 +88,8 @@ venv.bak/
 .ropeproject
 
 /site
+static/*
+media/*
 
 .mypy_cache/
 .dmypy.json

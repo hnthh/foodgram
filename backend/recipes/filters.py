@@ -1,6 +1,7 @@
 import django_filters as filters
 from recipes.decorators import recipe_filter_bool_param
-from recipes.models import Ingredient, Recipe, Tag
+from recipes.models import Recipe
+from tags.models import Tag
 
 
 class RecipeFilter(filters.FilterSet):
@@ -34,11 +35,3 @@ class RecipeFilter(filters.FilterSet):
         return queryset.filter(
             purchases__user=self.request.user,
         )
-
-
-class IngredientFilter(filters.FilterSet):
-    name = filters.CharFilter(field_name='name', lookup_expr='istartswith')
-
-    class Meta:
-        model = Ingredient
-        fields = ('name',)
