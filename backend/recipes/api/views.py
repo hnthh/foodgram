@@ -5,15 +5,16 @@ from config.permissions import IsAuthor
 from config.settings import SITE_ROOT
 from django.db.models import Sum
 from django.http import FileResponse
-from recipes.decorators import recipe_favorite_shoppingcart_actions
-from recipes.filters import RecipeFilter
-from recipes.models import Favorite, Recipe, RecipeIngredient, ShoppingCart
-from recipes.serializers import (
+from ingredients.models import RecipeIngredient
+from recipes.api.serializers import (
     FavoriteSerializer,
     RecipeCreateSerializer,
     RecipeSerializer,
     ShoppingCartSerializer,
 )
+from recipes.decorators import recipe_favorite_shoppingcart_actions
+from recipes.filters import RecipeFilter
+from recipes.models import Favorite, Recipe, ShoppingCart
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas

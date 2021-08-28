@@ -1,5 +1,5 @@
 from django.urls import include, path
-from ingredients.views import IngredientViewSet
+from ingredients.api.views import IngredientViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()

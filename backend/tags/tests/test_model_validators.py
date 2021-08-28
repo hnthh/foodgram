@@ -1,6 +1,6 @@
 import pytest
 from django.db.utils import IntegrityError
-from recipes.models import Tag
+from tags.models import Tag
 
 pytestmark = [pytest.mark.django_db]
 

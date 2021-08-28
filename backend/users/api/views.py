@@ -6,8 +6,8 @@ from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
+from users.api.serializers import SubscribeSerializer, SubscriptionSerializer
 from users.models import Subscribe
-from users.serializers import SubscribeSerializer, SubscriptionSerializer
 
 User = get_user_model()
 

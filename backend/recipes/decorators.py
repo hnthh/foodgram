@@ -1,7 +1,7 @@
 from functools import wraps
 
 from django.core.exceptions import ObjectDoesNotExist
-from recipes.models import Ingredient, RecipeIngredient
+from ingredients.models import Ingredient, RecipeIngredient
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response

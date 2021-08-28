@@ -1,6 +1,6 @@
+from ingredients.api.serializers import IngredientSerializer
 from ingredients.filters import IngredientFilter
 from ingredients.models import Ingredient
-from ingredients.serializers import IngredientSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 

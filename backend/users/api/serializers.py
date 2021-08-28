@@ -91,7 +91,7 @@ class SubscriptionSerializer(UserSerializer):
         )
 
     def get_recipes(self, user):
-        from recipes.serializers import RecipeSubscriptionSerializer
+        from recipes.api.serializers import RecipeSubscriptionSerializer
 
         recipes_limit = self.context['request'].query_params.get(
             'recipes_limit',
