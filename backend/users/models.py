@@ -11,7 +11,12 @@ class User(AbstractUser):
 
     class Meta:
         swappable = 'AUTH_USER_MODEL'
-        unique_together = ('email', 'username')
+        constraints = (
+            models.UniqueConstraint(
+                fields=('email', 'username'),
+                name='unique_email_username',
+            ),
+        )
 
     def __str__(self):
         return self.username
@@ -30,7 +35,12 @@ class Subscribe(models.Model):
     )
 
     class Meta:
-        unique_together = ('user', 'author')
+        constraints = (
+            models.UniqueConstraint(
+                fields=('user', 'author'),
+                name='unique_user_author',
+            ),
+        )
 
     def __str__(self):
         return f'{self.user} / {self.author}'

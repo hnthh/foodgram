@@ -1,5 +1,5 @@
 import pytest
-from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 from recipes.models import Tag
 
 pytestmark = [pytest.mark.django_db]
@@ -9,8 +9,8 @@ def test_invalid_color():
     color = 'invalid-color'
 
     with pytest.raises(
-        ValidationError,
-        match=f'{color} is not a HEX color code.',
+        IntegrityError,
+        match='CHECK constraint failed: HEX_color',
     ):
         Tag.objects.create(
             name='Полдник',

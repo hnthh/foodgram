@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
+HEX_RE = '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+
 
 class Tag(models.Model):
     name = models.CharField(
@@ -17,7 +19,7 @@ class Tag(models.Model):
         max_length=7,
         validators=[
             RegexValidator(
-                regex='^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
+                regex=HEX_RE,
                 message='%(value)s is not a HEX color code.',
             ),
         ],
@@ -25,6 +27,14 @@ class Tag(models.Model):
     slug = models.SlugField(
         unique=True,
     )
+
+    class Meta:
+        constraints = (
+            models.CheckConstraint(
+                name='HEX_color',
+                check=models.Q(color__regex=HEX_RE),
+            ),
+        )
 
     def __str__(self):
         return self.name
@@ -35,7 +45,12 @@ class Ingredient(models.Model):
     measurement_unit = models.CharField(max_length=64)
 
     class Meta:
-        unique_together = ('name', 'measurement_unit')
+        constraints = (
+            models.UniqueConstraint(
+                fields=('name', 'measurement_unit'),
+                name='unique_ingredient_measurementunit',
+            ),
+        )
 
     def __str__(self):
         return f'{self.name}'
@@ -65,7 +80,12 @@ class Recipe(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('author', 'name')
+        constraints = (
+            models.UniqueConstraint(
+                fields=('author', 'name'),
+                name='unique_author_recipename',
+            ),
+        )
         ordering = ('-created',)
 
     def __str__(self):
@@ -91,7 +111,20 @@ class RecipeIngredient(models.Model):
     )
 
     class Meta:
-        unique_together = ('recipe', 'ingredient')
+        constraints = (
+            models.CheckConstraint(
+                name='amount_gt_0',
+                check=models.Q(amount__gt=0),
+            ),
+            models.CheckConstraint(
+                name='amount_lt_5000',
+                check=models.Q(amount__lt=5000),
+            ),
+            models.UniqueConstraint(
+                fields=('recipe', 'ingredient'),
+                name='unique_recipe_ingredient',
+            ),
+        )
 
     def __str__(self):
         return f'{self.amount} / {self.ingredient}'
@@ -108,7 +141,12 @@ class Favorite(models.Model):
     )
 
     class Meta:
-        unique_together = ('user', 'recipe')
+        constraints = (
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_user_recipe',
+            ),
+        )
 
     def __str__(self):
         return f'{self.user} / {self.recipe}'
@@ -127,7 +165,12 @@ class ShoppingCart(models.Model):
     )
 
     class Meta:
-        unique_together = ('user', 'recipe')
+        constraints = (
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_user_recipe',
+            ),
+        )
 
     def __str__(self):
         return f'{self.user} / {self.recipe}'

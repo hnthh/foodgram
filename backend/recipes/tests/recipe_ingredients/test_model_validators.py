@@ -1,15 +1,15 @@
 import pytest
-from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 from recipes.models import RecipeIngredient
 
 pytestmark = [pytest.mark.django_db]
 
 
-def test_gt(recipe, ingredient):
+def test_amount_gt(recipe, ingredient):
 
     with pytest.raises(
-        ValidationError,
-        match='Ensure this value is greater than 0.',
+        IntegrityError,
+        match='CHECK constraint failed: amount_gt_0',
     ):
         RecipeIngredient.objects.create(
             ingredient=ingredient,
@@ -18,11 +18,11 @@ def test_gt(recipe, ingredient):
         )
 
 
-def test_lt(recipe, ingredient):
+def test_amount_lt(recipe, ingredient):
 
     with pytest.raises(
-        ValidationError,
-        match="That's too much, man!",
+        IntegrityError,
+        match='CHECK constraint failed: amount_lt_5000',
     ):
         RecipeIngredient.objects.create(
             ingredient=ingredient,
