@@ -1,4 +1,4 @@
-from config.validators import GtMinValueValidator
+from config.validators import GteMinValueValidator
 from django.core.validators import MaxValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 class RecipeIngredient(models.Model):
     ingredient = models.ForeignKey(
         'ingredients.Ingredient',
+        related_name='ingredients',
         on_delete=models.CASCADE,
     )
     recipe = models.ForeignKey(
@@ -17,7 +18,7 @@ class RecipeIngredient(models.Model):
         decimal_places=1,
         max_digits=5,
         validators=[
-            GtMinValueValidator(0),
+            GteMinValueValidator(0),
             MaxValueValidator(5000, _("That's too much, man!")),
         ],
     )

@@ -2,7 +2,7 @@ from django.core.validators import MinValueValidator
 from django.utils.translation import gettext_lazy as _
 
 
-class GtMinValueValidator(MinValueValidator):
+class GteMinValueValidator(MinValueValidator):
     message = _('Ensure this value is greater than %(limit_value)s.')
     code = 'min_value'
 

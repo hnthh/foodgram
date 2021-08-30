@@ -1,33 +1,34 @@
 import io
 
-from config.mixins import MultiPermissionViewSetMixin
 from config.permissions import IsAuthor
 from config.settings import SITE_ROOT
+from config.viewsets import AppViewSet, MultiPermissionMixin
 from django.db.models import Sum
 from django.http import FileResponse
 from ingredients.models import RecipeIngredient
-from recipes.api.serializers import (
-    FavoriteSerializer,
-    RecipeCreateSerializer,
-    RecipeSerializer,
-    ShoppingCartSerializer,
-)
+from recipes.api import serializers
 from recipes.decorators import recipe_favorite_shoppingcart_actions
 from recipes.filters import RecipeFilter
 from recipes.models import Favorite, Recipe, ShoppingCart
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
 
 
-class RecipeViewSet(MultiPermissionViewSetMixin, ModelViewSet):
-
+class RecipeViewSet(MultiPermissionMixin, AppViewSet):
     queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
+    serializer_class = serializers.RecipeSerializer
+    serializer_action_classes = {
+        'create': serializers.RecipeCreateUpdateSerializer,
+        'update': serializers.RecipeCreateUpdateSerializer,
+        'favorite': serializers.FavoriteSerializer,
+        'shopping_cart': serializers.ShoppingCartSerializer,
+    }
     permission_classes = {
         'list': (AllowAny,),
         'create': (IsAuthenticated,),
@@ -40,18 +41,32 @@ class RecipeViewSet(MultiPermissionViewSetMixin, ModelViewSet):
     }
     filterset_class = RecipeFilter
 
-    def get_serializer_class(self):
-        if self.action in ('create', 'update'):
-            return RecipeCreateSerializer
-        return self.serializer_class
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        recipe = serializer.save()
 
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        representation = self.serializer_class(
+            recipe,
+            context={'request': request},
+        ).data
+        return Response(representation, status=status.HTTP_201_CREATED)
+
+    def update(self, request, pk):
+        recipe = self.get_object()
+        serializer = self.get_serializer(recipe, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        recipe = serializer.save()
+
+        representation = self.serializer_class(
+            recipe,
+            context={'request': request},
+        ).data
+        return Response(representation, status=status.HTTP_200_OK)
 
     @action(
         methods=['get', 'delete'],
         detail=True,
-        serializer_class=FavoriteSerializer,
     )
     @recipe_favorite_shoppingcart_actions
     def favorite(self, request, pk):
@@ -61,7 +76,6 @@ class RecipeViewSet(MultiPermissionViewSetMixin, ModelViewSet):
     @action(
         methods=['get', 'delete'],
         detail=True,
-        serializer_class=ShoppingCartSerializer,
     )
     @recipe_favorite_shoppingcart_actions
     def shopping_cart(self, request, pk):
@@ -73,7 +87,7 @@ class RecipeViewSet(MultiPermissionViewSetMixin, ModelViewSet):
     @action(detail=False)
     def download_shopping_cart(self, request):
         path = (
-            f'{SITE_ROOT}/static/fonts/'
+            f'{SITE_ROOT}/staticfiles/fonts/'
             'IBMPlexMono-ExtraLightItalic.ttf'
         )
         pdfmetrics.registerFont(

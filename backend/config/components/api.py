@@ -3,6 +3,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
+    'DEFAULT_RENDERER_CLASSES': [
+        'config.renderers.AppJSONRenderer',
+    ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
@@ -12,6 +15,7 @@ REST_FRAMEWORK = {
     ),
     'NON_FIELD_ERRORS_KEY': 'errors',
     'PAGE_SIZE': 6,
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
 CORS_ORIGIN_ALLOW_ALL = True

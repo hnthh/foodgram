@@ -1,7 +1,10 @@
 from drf_extra_fields.fields import Base64ImageField
-from ingredients.models import RecipeIngredient
-from recipes.decorators import recipe_create_update
+from ingredients.models import Ingredient, RecipeIngredient
 from recipes.models import Favorite, Recipe, ShoppingCart
+from recipes.services.recipe_creator_updater import (
+    RecipeCreator,
+    RecipeUpdater,
+)
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from tags.api.serializers import TagSerializer
@@ -9,13 +12,11 @@ from tags.models import Tag
 from users.api.serializers import UserSerializer
 
 
-class AddIngredientSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    amount = serializers.IntegerField()
-
-
 class RecipeIngredientSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField(source='ingredient.id')
+    id = serializers.PrimaryKeyRelatedField(
+        source='ingredient',
+        queryset=Ingredient.objects.all(),
+    )
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit',
@@ -32,7 +33,10 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    ingredients = serializers.SerializerMethodField()
+    ingredients = RecipeIngredientSerializer(
+        many=True,
+        source='recipeingredient_set',
+    )
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
     tags = TagSerializer(many=True)
@@ -52,10 +56,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             'text',
             'cooking_time',
         )
-
-    def get_ingredients(self, recipe):
-        queryset = RecipeIngredient.objects.filter(recipe=recipe)
-        return RecipeIngredientSerializer(queryset, many=True).data
 
     def get_is_favorited(self, recipe):
         user = self.context['request'].user
@@ -82,9 +82,10 @@ class RecipeSubscriptionSerializer(RecipeSerializer):
         )
 
 
-class RecipeCreateSerializer(serializers.ModelSerializer):
+class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
+    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
     image = Base64ImageField()
-    ingredients = AddIngredientSerializer(many=True)
+    ingredients = RecipeIngredientSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(),
         many=True,
@@ -93,6 +94,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = (
+            'author',
             'ingredients',
             'tags',
             'image',
@@ -101,24 +103,13 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             'cooking_time',
         )
 
-    def to_representation(self, recipe):
-        return RecipeSerializer(
-            recipe,
-            context={'request': self.context['request']},
-        ).data
-
-    @recipe_create_update
     def create(self, validated_data):
-        return Recipe.objects.create(**validated_data)
+        creator = RecipeCreator(**validated_data)
+        return creator()
 
-    @recipe_create_update
     def update(self, recipe, validated_data):
-        recipe.recipeingredient_set.all().delete()
-        recipe.tags.remove()
-
-        Recipe.objects.filter(id=recipe.id).update(**validated_data)
-        recipe.refresh_from_db()
-        return recipe
+        updater = RecipeUpdater(recipe, **validated_data)
+        return updater()
 
 
 class FavoriteSerializer(serializers.ModelSerializer):

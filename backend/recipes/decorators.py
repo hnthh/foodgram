@@ -1,28 +1,8 @@
 from functools import wraps
 
 from django.core.exceptions import ObjectDoesNotExist
-from ingredients.models import Ingredient, RecipeIngredient
 from rest_framework import status
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-
-
-def recipe_create_update(func):
-    def wrapper(*args):
-        ingredients = args[-1].pop('ingredients')
-        tags = args[-1].pop('tags')
-
-        recipe = func(*args)
-
-        for ingredient in ingredients:
-            RecipeIngredient.objects.create(
-                recipe=recipe,
-                ingredient=get_object_or_404(Ingredient, id=ingredient['id']),
-                amount=ingredient['amount'],
-            )
-        recipe.tags.set(tags)
-        return recipe
-    return wrapper
 
 
 def recipe_favorite_shoppingcart_actions(func):
@@ -32,7 +12,7 @@ def recipe_favorite_shoppingcart_actions(func):
         pk = kwargs['pk']
 
         user = request.user
-        model_name = self.serializer_class.Meta.model.__name__
+        model_name = self.get_serializer_class().Meta.model.__name__
 
         if request.method == 'DELETE':
             try:
