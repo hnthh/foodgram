@@ -1,11 +1,6 @@
-import io
-
 from config.permissions import IsAuthor
-from config.settings import SITE_ROOT
 from config.viewsets import AppViewSet, MultiPermissionMixin
-from django.db.models import Sum
 from django.http import FileResponse
-from ingredients.models import RecipeIngredient
 from recipes.api import serializers
 from recipes.filters import RecipeFilter
 from recipes.models import Favorite, Recipe, ShoppingCart
@@ -17,9 +12,7 @@ from recipes.services.delete_from_favorites_and_shopping_cart import (
     DeleteFromFavorites,
     DeleteFromShoppingCart,
 )
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfgen import canvas
+from recipes.services.shopping_cart_pdf_creator import ShoppingCartPDFCreator
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -136,38 +129,8 @@ class RecipeViewSet(MultiPermissionMixin, AppViewSet):
 
     @action(detail=False)
     def download_shopping_cart(self, request):
-        path = (
-            f'{SITE_ROOT}/staticfiles/fonts/'
-            'IBMPlexMono-ExtraLightItalic.ttf'
-        )
-        pdfmetrics.registerFont(
-            TTFont('IBMPlexMono-ExtraLightItalic', path),
-        )
+        buffer = ShoppingCartPDFCreator(user=request.user, font='IBMPlexMono-ExtraLightItalic')()
 
-        buffer = io.BytesIO()
-        pdf = canvas.Canvas(buffer)
-
-        purchases = pdf.beginText(0, 650)
-        purchases.setFont('IBMPlexMono-ExtraLightItalic', 15)
-
-        ingredients = RecipeIngredient.objects.filter(
-            recipe__purchases__user=request.user,
-        ).values(
-            'ingredient__name',
-            'ingredient__measurement_unit',
-        ).annotate(
-            total=Sum('amount'),
-        )
-
-        for number, ingredient in enumerate(ingredients, start=1):
-            name, unit, total = ingredient.values()
-            purchases.textLine(f'{number}) {name} — {total} ({unit})')
-
-        pdf.drawText(purchases)
-        pdf.showPage()
-        pdf.save()
-
-        buffer.seek(0)
         return FileResponse(
             buffer,
             as_attachment=True,
