@@ -36,12 +36,12 @@ class RecipeViewSet(AppViewSet):
         'destroy': IsAuthor,
     }
     favorite_method_services = {
-        'get': lambda self, **kwargs: self.get_action_method(service=AddToFavorites, **kwargs),
-        'delete': lambda self, **kwargs: self.delete_action_method(service=DeleteFromFavorites, **kwargs),
+        'get': lambda self, **kwargs: self._get_action_method(service=AddToFavorites, **kwargs),
+        'delete': lambda self, **kwargs: self._delete_action_method(service=DeleteFromFavorites, **kwargs),
     }
     shopping_cart_method_services = {
-        'get': lambda self, **kwargs: self.get_action_method(service=AddToShoppingCart, **kwargs),
-        'delete': lambda self, **kwargs: self.delete_action_method(service=DeleteFromShoppingCart, **kwargs),
+        'get': lambda self, **kwargs: self._get_action_method(service=AddToShoppingCart, **kwargs),
+        'delete': lambda self, **kwargs: self._delete_action_method(service=DeleteFromShoppingCart, **kwargs),
     }
 
     def create(self, request):
@@ -92,7 +92,7 @@ class RecipeViewSet(AppViewSet):
         recipe = self.get_object()
         return user, recipe
 
-    def get_action_method(self, **kwargs):
+    def _get_action_method(self, **kwargs):
         service, model, request, pk = kwargs.values()
         user, recipe = self._get_service_args(request=request)
         data = {'user': user.id, 'recipe': pk}
@@ -106,7 +106,7 @@ class RecipeViewSet(AppViewSet):
         service(model=model, user=user, recipe=recipe)()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def delete_action_method(self, **kwargs):
+    def _delete_action_method(self, **kwargs):
         service, model, request, _ = kwargs.values()
         user, recipe = self._get_service_args(request=request)
 
