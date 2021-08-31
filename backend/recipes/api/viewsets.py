@@ -1,5 +1,5 @@
 from config.permissions import IsAuthor
-from config.viewsets import AppViewSet, MultiPermissionMixin
+from config.viewsets import AppViewSet
 from django.http import FileResponse
 from recipes.api import serializers
 from recipes.filters import RecipeFilter
@@ -15,11 +15,11 @@ from recipes.services.delete_from_favorites_and_shopping_cart import (
 from recipes.services.shopping_cart_pdf_creator import ShoppingCartPDFCreator
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 
-class RecipeViewSet(MultiPermissionMixin, AppViewSet):
+class RecipeViewSet(AppViewSet):
     queryset = Recipe.objects.all()
     serializer_class = serializers.RecipeSerializer
     filterset_class = RecipeFilter
@@ -29,15 +29,11 @@ class RecipeViewSet(MultiPermissionMixin, AppViewSet):
         'favorite': serializers.FavoriteSerializer,
         'shopping_cart': serializers.ShoppingCartSerializer,
     }
-    permission_classes = {
-        'list': (AllowAny,),
-        'create': (IsAuthenticated,),
-        'retrieve': (AllowAny,),
-        'update': (IsAuthor,),
-        'destroy': (IsAuthor,),
-        'favorite': (IsAuthenticated,),
-        'shopping_cart': (IsAuthenticated,),
-        'download_shopping_cart': (IsAuthenticated,),
+    permission_action_classes = {
+        'list': AllowAny,
+        'retrieve': AllowAny,
+        'update': IsAuthor,
+        'destroy': IsAuthor,
     }
     favorite_method_services = {
         'get': lambda self, **kwargs: self.add_to_favorites(**kwargs),

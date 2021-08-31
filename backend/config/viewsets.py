@@ -1,5 +1,5 @@
-from config.permissions import NotGranted
-from rest_framework.permissions import AllowAny
+from collections.abc import Iterable
+
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.viewsets import (
     ReadOnlyModelViewSet as _ReadOnlyModelViewSet,
@@ -24,21 +24,22 @@ class MultiSerializerMixin:
 
 class MultiPermissionMixin:
     def get_permissions(self):
-        action = self.action
         try:
-            permissions = self.permission_classes[action]
+            permissions = self.permission_action_classes[self.action]
         except (KeyError, AttributeError):
-            if action not in self.get_extra_actions():
-                permissions = [AllowAny]
-            else:
-                permissions = [NotGranted]
+            return super().get_permissions()
+
+        if not isinstance(permissions, Iterable):
+            converter = list()
+            converter.append(permissions)
+            permissions = converter
 
         return (permission() for permission in permissions)
 
 
-class ReadOnlyAppViewSet(MultiSerializerMixin, _ReadOnlyModelViewSet):
+class ReadOnlyAppViewSet(MultiSerializerMixin, MultiPermissionMixin, _ReadOnlyModelViewSet):
     pass
 
 
-class AppViewSet(MultiSerializerMixin, ModelViewSet):
+class AppViewSet(MultiSerializerMixin, MultiPermissionMixin, ModelViewSet):
     pass
