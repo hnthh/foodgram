@@ -1,19 +1,26 @@
+from config.viewsets import MultiSerializerMixin
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import MethodNotAllowed
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from rest_framework.serializers import ValidationError
-from users.api.serializers import SubscribeSerializer, SubscriptionSerializer
-from users.models import Subscribe
+from users.api import serializers
+from users.services.subscriber import Subscriber
+from users.services.unsubscriber import Unsubscriber
 
 User = get_user_model()
 
 
-class UserViewSet(DjoserUserViewSet):
+class UserViewSet(MultiSerializerMixin, DjoserUserViewSet):
+    serializer_action_classes = {
+        'subscribe': serializers.SubscribeSerializer,
+        'subscriptions': serializers.SubscriptionSerializer,
+    }
+    subscribe_method_services = {
+        'get': lambda self, **kwargs: self._subscribe(service=Subscriber, **kwargs),
+        'delete': lambda self, **kwargs: self._unsubscribe(service=Unsubscriber, **kwargs),
+    }
 
     def destroy(self, request, **kwargs):
         raise MethodNotAllowed(request.method)
@@ -21,40 +28,44 @@ class UserViewSet(DjoserUserViewSet):
     def update(self, request, **kwargs):
         raise MethodNotAllowed(request.method)
 
-    @action(
-        methods=['get', 'delete'],
-        detail=True,
-        serializer_class=SubscribeSerializer,
-    )
-    def subscribe(self, request, id):
+    @action(methods=['get', 'delete'], detail=True)
+    def subscribe(self, request, **kwargs):
+        method = request.method.lower()
+        return self.subscribe_method_services[method](
+            self=self,
+            request=request,
+            pk=kwargs.get('id'),
+        )
+
+    def _get_service_args(self, request, pk):
         user = request.user
-        author = get_object_or_404(User, id=id)
+        author = User.objects.get(pk=pk)
+        return user, author
 
-        if request.method == 'GET':
-            data = {'user': user.id, 'author': id}
-            serializer = self.get_serializer(data=data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            output = SubscriptionSerializer(
-                author,
-                context={'request': request},
-            )
-            return Response(output.data, status=status.HTTP_201_CREATED)
+    def _subscribe(self, **kwargs):
+        service, request, pk = kwargs.values()
+        user, author = self._get_service_args(request, pk)
 
-        try:
-            subscribe = Subscribe.objects.get(user=user, author=author)
-        except ObjectDoesNotExist:
-            raise ValidationError(
-                {'errors': 'Subscribe object does not exist'},
-            )
+        data = {'user': user.id, 'author': pk}
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
 
-        subscribe.delete()
+        service(user=user, author=author)()
+
+        representation = self.get_serializer_class(action='subscriptions')(
+            author,
+            context={'request': request},
+        )
+        return Response(representation.data, status=status.HTTP_201_CREATED)
+
+    def _unsubscribe(self, **kwargs):
+        service, request, pk = kwargs.values()
+        user, author = self._get_service_args(request, pk)
+
+        service(user=user, author=author)()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(
-        detail=False,
-        serializer_class=SubscriptionSerializer,
-    )
+    @action(detail=False)
     def subscriptions(self, request):
         return self.list(request)
 
