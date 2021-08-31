@@ -3,6 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
@@ -14,11 +15,11 @@ User = get_user_model()
 
 class UserViewSet(DjoserUserViewSet):
 
-    def destroy(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    def destroy(self, request, **kwargs):
+        raise MethodNotAllowed(request.method)
 
-    def update(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    def update(self, request, **kwargs):
+        raise MethodNotAllowed(request.method)
 
     @action(
         methods=['get', 'delete'],

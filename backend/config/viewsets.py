@@ -1,9 +1,6 @@
 from collections.abc import Iterable
 
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.viewsets import (
-    ReadOnlyModelViewSet as _ReadOnlyModelViewSet,
-)
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 __all__ = [
     'AppViewSet',
@@ -37,7 +34,7 @@ class MultiPermissionMixin:
         return (permission() for permission in permissions)
 
 
-class ReadOnlyAppViewSet(MultiSerializerMixin, MultiPermissionMixin, _ReadOnlyModelViewSet):
+class ReadOnlyAppViewSet(MultiSerializerMixin, MultiPermissionMixin, ReadOnlyModelViewSet):
     pass
 
 

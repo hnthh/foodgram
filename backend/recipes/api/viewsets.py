@@ -21,8 +21,8 @@ from rest_framework.response import Response
 
 class RecipeViewSet(AppViewSet):
     queryset = Recipe.objects.all()
-    serializer_class = serializers.RecipeSerializer
     filterset_class = RecipeFilter
+    serializer_class = serializers.RecipeSerializer
     serializer_action_classes = {
         'create': serializers.RecipeCreateUpdateSerializer,
         'update': serializers.RecipeCreateUpdateSerializer,
