@@ -140,9 +140,10 @@ class FavoriteSerializer(serializers.ModelSerializer):
             ),
         ]
 
-    def get_image(self, favorite):
+    def get_image(self, ordered):
+        _, recipe = ordered.values()
         request = self.context.get('request')
-        image_url = favorite.recipe.image.url
+        image_url = recipe.image.url
         return request.build_absolute_uri(image_url)
 
 
@@ -174,7 +175,8 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
             ),
         ]
 
-    def get_image(self, shopping_cart):
+    def get_image(self, ordered):
+        _, recipe = ordered.values()
         request = self.context.get('request')
-        image_url = shopping_cart.recipe.image.url
+        image_url = recipe.image.url
         return request.build_absolute_uri(image_url)

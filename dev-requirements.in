@@ -1,7 +1,5 @@
 -c requirements.txt
 
-nano
-
 pytest
 pytest-cov
 pytest-django
