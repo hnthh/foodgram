@@ -36,12 +36,12 @@ class RecipeViewSet(AppViewSet):
         'destroy': IsAuthor,
     }
     favorite_method_services = {
-        'get': lambda self, **kwargs: self.add_to_favorites(**kwargs),
-        'delete': lambda self, **kwargs: self.delete_from_favorites(**kwargs),
+        'get': lambda self, **kwargs: self.get_action_method(service=AddToFavorites, **kwargs),
+        'delete': lambda self, **kwargs: self.delete_action_method(service=DeleteFromFavorites, **kwargs),
     }
     shopping_cart_method_services = {
-        'get': lambda self, **kwargs: self.add_to_shopping_cart(**kwargs),
-        'delete': lambda self, **kwargs: self.delete_from_shopping_cart(**kwargs),
+        'get': lambda self, **kwargs: self.get_action_method(service=AddToShoppingCart, **kwargs),
+        'delete': lambda self, **kwargs: self.delete_action_method(service=DeleteFromShoppingCart, **kwargs),
     }
 
     def create(self, request):
@@ -72,6 +72,7 @@ class RecipeViewSet(AppViewSet):
         method = request.method.lower()
         return self.favorite_method_services[method](
             self=self,
+            model=Favorite,
             request=request,
             pk=kwargs.get('pk'),
         )
@@ -81,6 +82,7 @@ class RecipeViewSet(AppViewSet):
         method = request.method.lower()
         return self.shopping_cart_method_services[method](
             self=self,
+            model=ShoppingCart,
             request=request,
             pk=kwargs.get('pk'),
         )
@@ -110,18 +112,6 @@ class RecipeViewSet(AppViewSet):
 
         service(model=model, user=user, recipe=recipe)()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def add_to_favorites(self, **kwargs):
-        return self.get_action_method(service=AddToFavorites, model=Favorite, **kwargs)
-
-    def add_to_shopping_cart(self, **kwargs):
-        return self.get_action_method(service=AddToShoppingCart, model=ShoppingCart, **kwargs)
-
-    def delete_from_favorites(self, **kwargs):
-        return self.delete_action_method(service=DeleteFromFavorites, model=Favorite, **kwargs)
-
-    def delete_from_shopping_cart(self, **kwargs):
-        return self.delete_action_method(service=DeleteFromShoppingCart, model=ShoppingCart, **kwargs)
 
     @action(detail=False)
     def download_shopping_cart(self, request):
