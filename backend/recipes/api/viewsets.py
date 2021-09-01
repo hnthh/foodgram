@@ -115,10 +115,10 @@ class RecipeViewSet(AppViewSet):
 
     @action(detail=False)
     def download_shopping_cart(self, request):
-        buffer = ShoppingCartPDFCreator(user=request.user, font='IBMPlexMono-ExtraLightItalic')()
+        pdf = ShoppingCartPDFCreator(user=request.user, font='IBMPlexMono-ExtraLightItalic')()
 
         return FileResponse(
-            buffer,
+            pdf,
             as_attachment=True,
             filename='ingredients.pdf',
         )
