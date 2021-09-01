@@ -87,15 +87,10 @@ class RecipeViewSet(AppViewSet):
             self, request, pk, ShoppingCart,
         )
 
-    def _get_service_args(self, request):
-        user = request.user
-        recipe = self.get_object()
-        return user, recipe
-
     def _get_action_method(self, *args):
         service, request, pk, model = args
-        user, recipe = self._get_service_args(request)
-        data = {'user': user.id, 'recipe': pk}
+        recipe = self.get_object()
+        data = {'user': request.user.id, 'recipe': pk}
 
         serializer = self.get_serializer_class()(
             data=data,
@@ -103,14 +98,14 @@ class RecipeViewSet(AppViewSet):
         )
         serializer.is_valid(raise_exception=True)
 
-        service(model=model, user=user, recipe=recipe)()
+        service(model=model, user=request.user, recipe=recipe)()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def _delete_action_method(self, *args):
         service, request, pk, model = args
-        user, recipe = self._get_service_args(request)
+        recipe = self.get_object()
 
-        service(model=model, user=user, recipe=recipe)()
+        service(model=model, user=request.user, recipe=recipe)()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False)
