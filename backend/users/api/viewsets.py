@@ -33,20 +33,15 @@ class UserViewSet(MultiSerializerMixin, DjoserUserViewSet):
         method = request.method.lower()
         return self.subscribe_method_dispatcher[method](self, request, id)
 
-    def _get_service_args(self, request, pk):
-        user = request.user
-        author = User.objects.get(pk=pk)
-        return user, author
-
     def _subscribe(self, *args):
         service, request, pk = args
-        user, author = self._get_service_args(request, pk)
+        author = User.objects.get(pk=pk)
 
-        data = {'user': user.id, 'author': pk}
+        data = {'user': request.user.id, 'author': pk}
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
 
-        service(user=user, author=author)()
+        service(user=request.user, author=author)()
 
         representation = self.get_serializer_class(action='subscriptions')(
             author,
@@ -56,9 +51,9 @@ class UserViewSet(MultiSerializerMixin, DjoserUserViewSet):
 
     def _unsubscribe(self, *args):
         service, request, pk = args
-        user, author = self._get_service_args(request, pk)
+        author = User.objects.get(pk=pk)
 
-        service(user=user, author=author)()
+        service(user=request.user, author=author)()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False)
