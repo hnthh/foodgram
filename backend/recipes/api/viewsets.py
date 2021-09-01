@@ -12,6 +12,10 @@ from recipes.services.delete_from_favorites_and_shopping_cart import (
     DeleteFromFavorites,
     DeleteFromShoppingCart,
 )
+from recipes.services.recipe_creator_updater import (
+    RecipeCreator,
+    RecipeUpdater,
+)
 from recipes.services.shopping_cart_pdf_creator import ShoppingCartPDFCreator
 from rest_framework import status
 from rest_framework.decorators import action
@@ -47,10 +51,11 @@ class RecipeViewSet(AppViewSet):
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        recipe = serializer.save()
+
+        creator = RecipeCreator(**serializer.validated_data)()
 
         representation = self.serializer_class(
-            recipe,
+            creator,
             context={'request': request},
         ).data
         return Response(representation, status=status.HTTP_201_CREATED)
@@ -59,42 +64,43 @@ class RecipeViewSet(AppViewSet):
         recipe = self.get_object()
         serializer = self.get_serializer(recipe, data=request.data)
         serializer.is_valid(raise_exception=True)
-        recipe = serializer.save()
+
+        updater = RecipeUpdater(recipe, **serializer.validated_data)()
 
         representation = self.serializer_class(
-            recipe,
+            updater,
             context={'request': request},
         ).data
         return Response(representation, status=status.HTTP_200_OK)
 
     @action(methods=['get', 'delete'], detail=True)
-    def favorite(self, request, **kwargs):
+    def favorite(self, request, pk):
         method = request.method.lower()
         return self.favorite_method_services[method](
-            self=self,
+            self,
             model=Favorite,
             request=request,
-            pk=kwargs.get('pk'),
+            pk=pk,
         )
 
     @action(methods=['get', 'delete'], detail=True)
-    def shopping_cart(self, request, **kwargs):
+    def shopping_cart(self, request, pk):
         method = request.method.lower()
         return self.shopping_cart_method_services[method](
-            self=self,
+            self,
             model=ShoppingCart,
             request=request,
-            pk=kwargs.get('pk'),
+            pk=pk,
         )
 
-    def _get_service_args(self, **kwargs):
-        user = kwargs.get('request').user
+    def _get_service_args(self, request):
+        user = request.user
         recipe = self.get_object()
         return user, recipe
 
     def _get_action_method(self, **kwargs):
         service, model, request, pk = kwargs.values()
-        user, recipe = self._get_service_args(request=request)
+        user, recipe = self._get_service_args(request)
         data = {'user': user.id, 'recipe': pk}
 
         serializer = self.get_serializer_class()(
@@ -108,7 +114,7 @@ class RecipeViewSet(AppViewSet):
 
     def _delete_action_method(self, **kwargs):
         service, model, request, _ = kwargs.values()
-        user, recipe = self._get_service_args(request=request)
+        user, recipe = self._get_service_args(request)
 
         service(model=model, user=user, recipe=recipe)()
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -1,10 +1,6 @@
 from drf_extra_fields.fields import Base64ImageField
 from ingredients.models import Ingredient, RecipeIngredient
 from recipes.models import Favorite, Recipe, ShoppingCart
-from recipes.services.recipe_creator_updater import (
-    RecipeCreator,
-    RecipeUpdater,
-)
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from tags.api.serializers import TagSerializer
@@ -102,14 +98,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             'text',
             'cooking_time',
         )
-
-    def create(self, validated_data):
-        creator = RecipeCreator(**validated_data)
-        return creator()
-
-    def update(self, recipe, validated_data):
-        updater = RecipeUpdater(recipe, **validated_data)
-        return updater()
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
