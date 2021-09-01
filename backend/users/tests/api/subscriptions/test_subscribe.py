@@ -38,10 +38,7 @@ def test_self_subscribe(as_user, user):
     url = f'/api/users/{user.id}/subscribe/'
     got = as_user.get(url, expected_status=400)
     assert not Subscribe.objects.filter(user=user, author=user).exists()
-    assert (
-        'You cannot subscribe/unsubscribe to yourself'
-        in got['errors']
-    )
+    assert 'You cannot subscribe to yourself' in got['errors']
 
 
 def test_subscribe_twice(as_user, user, admin):
@@ -51,7 +48,7 @@ def test_subscribe_twice(as_user, user, admin):
 
     got = as_user.get(url, expected_status=400)
     assert (
-        'Subscribe object with given credentials already exists'
+        'Subscription already exists'
         in got['errors']
     )
 

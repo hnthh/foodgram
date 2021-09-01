@@ -1,4 +1,6 @@
+from config.serializers import DoMixin, ModelSerializer
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext as _
 from djoser.serializers import (
     UserCreateSerializer as DjoserUserCreateSerializer,
 )
@@ -11,7 +13,7 @@ from users.models import Subscribe
 User = get_user_model()
 
 
-class UserSerializer(DjoserUserSerializer):
+class UserSerializer(DoMixin, DjoserUserSerializer):
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
@@ -49,30 +51,6 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
         }
 
 
-class SubscribeSerializer(UserSerializer):
-
-    class Meta:
-        model = Subscribe
-        fields = ('user', 'author')
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Subscribe.objects.all(),
-                fields=('user', 'author'),
-                message=(
-                    'Subscribe object with given credentials '
-                    'already exists'
-                ),
-            ),
-        ]
-
-    def validate(self, data):
-        if data['user'] == data['author']:
-            raise serializers.ValidationError(
-                'You cannot subscribe/unsubscribe to yourself',
-            )
-        return data
-
-
 class SubscriptionSerializer(UserSerializer):
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
@@ -104,3 +82,43 @@ class SubscriptionSerializer(UserSerializer):
 
     def get_recipes_count(self, user):
         return user.recipes.count()
+
+
+class SubscribeSerializer(ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Subscribe
+        fields = ('user', 'author')
+        validators = (
+            UniqueTogetherValidator(
+                queryset=Subscribe.objects.all(),
+                fields=('user', 'author'),
+                message='Subscription already exists',
+            ),
+        )
+
+    def validate(self, data):
+        if data['user'] == data['author']:
+            raise serializers.ValidationError(
+                _('You cannot subscribe to yourself'),
+            )
+        return data
+
+
+class UnsubscribeSerializer(ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Subscribe
+        fields = ('user', 'author')
+
+    def validate(self, data):
+        user, author = data.values()
+
+        subscription = Subscribe.objects.filter(user=user, author=author).first()
+        if subscription is None:
+            raise serializers.ValidationError(
+                {'errors': _('Subscription does not exist')},
+            )
+        return data

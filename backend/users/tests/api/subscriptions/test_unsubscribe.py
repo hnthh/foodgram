@@ -22,7 +22,7 @@ def test_not_exists(as_user, admin):
     url = f'/api/users/{admin.id}/subscribe/'
 
     got = as_user.delete(url, expected_status=400)
-    assert 'Subscribe object does not exist' in got['errors']
+    assert 'Subscription does not exist' in got['errors']
 
 
 def test_anon(as_anon, user):

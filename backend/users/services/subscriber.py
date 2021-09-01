@@ -3,14 +3,11 @@ from users.models import Subscribe
 
 class Subscriber:
     def __init__(self, user, author):
-        self._user = user
-        self._author = author
+        self.user = user
+        self.author = author
 
     def __call__(self, *args, **kwargs):
-        return self._factory()
+        self.subscribe()
 
-    def _factory(self):
-        return Subscribe.objects.create(
-            user=self._user,
-            author=self._author,
-        )
+    def subscribe(self):
+        Subscribe.objects.create(user=self.user, author=self.author)
