@@ -18,8 +18,8 @@ class UserViewSet(MultiSerializerMixin, DjoserUserViewSet):
         'subscriptions': serializers.SubscriptionSerializer,
     }
     subscribe_method_services = {
-        'get': lambda self, **kwargs: self._subscribe(service=Subscriber, **kwargs),
-        'delete': lambda self, **kwargs: self._unsubscribe(service=Unsubscriber, **kwargs),
+        'get': lambda self, *args: self._subscribe(Subscriber, *args),
+        'delete': lambda self, *args: self._unsubscribe(Unsubscriber, *args),
     }
 
     def destroy(self, request, **kwargs):
@@ -29,21 +29,17 @@ class UserViewSet(MultiSerializerMixin, DjoserUserViewSet):
         raise MethodNotAllowed(request.method)
 
     @action(methods=['get', 'delete'], detail=True)
-    def subscribe(self, request, **kwargs):
+    def subscribe(self, request, id):
         method = request.method.lower()
-        return self.subscribe_method_services[method](
-            self=self,
-            request=request,
-            pk=kwargs.get('id'),
-        )
+        return self.subscribe_method_services[method](self, request, id)
 
     def _get_service_args(self, request, pk):
         user = request.user
         author = User.objects.get(pk=pk)
         return user, author
 
-    def _subscribe(self, **kwargs):
-        service, request, pk = kwargs.values()
+    def _subscribe(self, *args):
+        service, request, pk = args
         user, author = self._get_service_args(request, pk)
 
         data = {'user': user.id, 'author': pk}
@@ -58,8 +54,8 @@ class UserViewSet(MultiSerializerMixin, DjoserUserViewSet):
         )
         return Response(representation.data, status=status.HTTP_201_CREATED)
 
-    def _unsubscribe(self, **kwargs):
-        service, request, pk = kwargs.values()
+    def _unsubscribe(self, *args):
+        service, request, pk = args
         user, author = self._get_service_args(request, pk)
 
         service(user=user, author=author)()

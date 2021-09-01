@@ -40,12 +40,12 @@ class RecipeViewSet(AppViewSet):
         'destroy': IsAuthor,
     }
     favorite_method_services = {
-        'get': lambda self, **kwargs: self._get_action_method(service=AddToFavorites, **kwargs),
-        'delete': lambda self, **kwargs: self._delete_action_method(service=DeleteFromFavorites, **kwargs),
+        'get': lambda self, *args: self._get_action_method(AddToFavorites, *args),
+        'delete': lambda self, *args: self._delete_action_method(DeleteFromFavorites, *args),
     }
     shopping_cart_method_services = {
-        'get': lambda self, **kwargs: self._get_action_method(service=AddToShoppingCart, **kwargs),
-        'delete': lambda self, **kwargs: self._delete_action_method(service=DeleteFromShoppingCart, **kwargs),
+        'get': lambda self, *args: self._get_action_method(AddToShoppingCart, *args),
+        'delete': lambda self, *args: self._delete_action_method(DeleteFromShoppingCart, *args),
     }
 
     def create(self, request):
@@ -77,20 +77,14 @@ class RecipeViewSet(AppViewSet):
     def favorite(self, request, pk):
         method = request.method.lower()
         return self.favorite_method_services[method](
-            self,
-            model=Favorite,
-            request=request,
-            pk=pk,
+            self, request, pk, Favorite,
         )
 
     @action(methods=['get', 'delete'], detail=True)
     def shopping_cart(self, request, pk):
         method = request.method.lower()
         return self.shopping_cart_method_services[method](
-            self,
-            model=ShoppingCart,
-            request=request,
-            pk=pk,
+            self, request, pk, ShoppingCart,
         )
 
     def _get_service_args(self, request):
@@ -98,8 +92,8 @@ class RecipeViewSet(AppViewSet):
         recipe = self.get_object()
         return user, recipe
 
-    def _get_action_method(self, **kwargs):
-        service, model, request, pk = kwargs.values()
+    def _get_action_method(self, *args):
+        service, request, pk, model = args
         user, recipe = self._get_service_args(request)
         data = {'user': user.id, 'recipe': pk}
 
@@ -112,8 +106,8 @@ class RecipeViewSet(AppViewSet):
         service(model=model, user=user, recipe=recipe)()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def _delete_action_method(self, **kwargs):
-        service, model, request, _ = kwargs.values()
+    def _delete_action_method(self, *args):
+        service, request, pk, model = args
         user, recipe = self._get_service_args(request)
 
         service(model=model, user=user, recipe=recipe)()
