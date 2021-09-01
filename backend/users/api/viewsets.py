@@ -17,7 +17,7 @@ class UserViewSet(MultiSerializerMixin, DjoserUserViewSet):
         'subscribe': serializers.SubscribeSerializer,
         'subscriptions': serializers.SubscriptionSerializer,
     }
-    subscribe_method_services = {
+    subscribe_method_dispatcher = {
         'get': lambda self, *args: self._subscribe(Subscriber, *args),
         'delete': lambda self, *args: self._unsubscribe(Unsubscriber, *args),
     }
@@ -31,7 +31,7 @@ class UserViewSet(MultiSerializerMixin, DjoserUserViewSet):
     @action(methods=['get', 'delete'], detail=True)
     def subscribe(self, request, id):
         method = request.method.lower()
-        return self.subscribe_method_services[method](self, request, id)
+        return self.subscribe_method_dispatcher[method](self, request, id)
 
     def _get_service_args(self, request, pk):
         user = request.user

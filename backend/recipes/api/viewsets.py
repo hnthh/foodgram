@@ -39,11 +39,11 @@ class RecipeViewSet(AppViewSet):
         'update': IsAuthor,
         'destroy': IsAuthor,
     }
-    favorite_method_services = {
+    favorite_method_dispatcher = {
         'get': lambda self, *args: self._get_action_method(AddToFavorites, *args),
         'delete': lambda self, *args: self._delete_action_method(DeleteFromFavorites, *args),
     }
-    shopping_cart_method_services = {
+    shopping_cart_method_dispatcher = {
         'get': lambda self, *args: self._get_action_method(AddToShoppingCart, *args),
         'delete': lambda self, *args: self._delete_action_method(DeleteFromShoppingCart, *args),
     }
@@ -76,14 +76,14 @@ class RecipeViewSet(AppViewSet):
     @action(methods=['get', 'delete'], detail=True)
     def favorite(self, request, pk):
         method = request.method.lower()
-        return self.favorite_method_services[method](
+        return self.favorite_method_dispatcher[method](
             self, request, pk, Favorite,
         )
 
     @action(methods=['get', 'delete'], detail=True)
     def shopping_cart(self, request, pk):
         method = request.method.lower()
-        return self.shopping_cart_method_services[method](
+        return self.shopping_cart_method_dispatcher[method](
             self, request, pk, ShoppingCart,
         )
 
