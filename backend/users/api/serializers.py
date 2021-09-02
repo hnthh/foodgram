@@ -100,9 +100,7 @@ class SubscribeSerializer(ModelSerializer):
 
     def validate(self, data):
         if data['user'] == data['author']:
-            raise serializers.ValidationError(
-                _('You cannot subscribe to yourself'),
-            )
+            raise serializers.ValidationError(_('You cannot subscribe to yourself'))
         return data
 
 
@@ -118,7 +116,5 @@ class UnsubscribeSerializer(ModelSerializer):
 
         subscription = Subscribe.objects.filter(user=user, author=author).first()
         if subscription is None:
-            raise serializers.ValidationError(
-                {'errors': _('Subscription does not exist')},
-            )
+            raise serializers.ValidationError(_('Subscription does not exist'))
         return data

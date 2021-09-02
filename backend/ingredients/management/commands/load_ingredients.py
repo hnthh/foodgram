@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            file = open('ingredients/data/ingredients.csv')
+            file = open('ingredients/data/ingredients.csv')  # noqa
         except OSError:
             raise CommandError(
                 'Could not open ingredients.csv file',

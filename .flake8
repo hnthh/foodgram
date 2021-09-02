@@ -10,11 +10,6 @@ exclude =
     env/
 
 per-file-ignores =
-    */settings/__init__.py:F401
-    */apps.py:F401
-    */tests/*:E501, JS101
-    backend/config/components/*:E501
-    backend/recipes/decorators.py:R504
-    backend/ingredients/management/commands/load_ingredients.py:SIM115
+    */tests/*: JS101
 
 max-complexity = 10
