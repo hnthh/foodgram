@@ -1,15 +1,14 @@
-from django.contrib.auth import get_user_model
-from django.db import models
-
-User = get_user_model()
+from config.models import DefaultQuerySet, TimestampedModel, models
 
 
-class Recipe(models.Model):
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='recipes',
-    )
+class RecipeQuerySet(DefaultQuerySet):
+    pass
+
+
+class Recipe(TimestampedModel):
+    objects: RecipeQuerySet = RecipeQuerySet.as_manager()
+
+    author = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='recipes')
     name = models.CharField(max_length=256)
     text = models.TextField()
     image = models.ImageField(upload_to='recipes/images/')
@@ -20,12 +19,7 @@ class Recipe(models.Model):
         related_name='recipes',
         blank=True,
     )
-    tags = models.ManyToManyField(
-        'tags.Tag',
-        related_name='recipes',
-        blank=True,
-    )
-    created = models.DateTimeField(auto_now_add=True)
+    tags = models.ManyToManyField('tags.Tag', related_name='recipes', blank=True)
 
     class Meta:
         constraints = (
@@ -34,7 +28,4 @@ class Recipe(models.Model):
                 name='unique_author_recipename',
             ),
         )
-        ordering = ('-created',)
-
-    def __str__(self):
-        return self.name
+        ordering = ('-created', '-modified')
