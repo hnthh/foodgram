@@ -24,7 +24,6 @@ from rest_framework.response import Response
 
 
 class RecipeViewSet(AppViewSet):
-    queryset = Recipe.objects.all()
     filterset_class = RecipeFilter
     serializer_class = serializers.RecipeSerializer
     serializer_action_classes = {
@@ -48,16 +47,17 @@ class RecipeViewSet(AppViewSet):
         'delete': lambda self, *args: self._delete_action_method(DeleteFromShoppingCart, *args),
     }
 
+    def get_queryset(self):
+        return Recipe.objects.for_viewset(self.request.user)
+
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        creator = RecipeCreator(**serializer.validated_data)()
+        recipe = RecipeCreator(**serializer.validated_data)()
+        qs = Recipe.objects.for_detail(recipe.id, request.user)
 
-        representation = self.serializer_class(
-            creator,
-            context={'request': request},
-        ).data
+        representation = self.serializer_class(qs, context={'request': request}).data
         return Response(representation, status=status.HTTP_201_CREATED)
 
     def update(self, request, **kwargs):
@@ -65,12 +65,10 @@ class RecipeViewSet(AppViewSet):
         serializer = self.get_serializer(recipe, data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        updater = RecipeUpdater(recipe, **serializer.validated_data)()
+        RecipeUpdater(recipe, **serializer.validated_data)()
+        updated = self.get_object()
 
-        representation = self.serializer_class(
-            updater,
-            context={'request': request},
-        ).data
+        representation = self.serializer_class(updated, context={'request': request}).data
         return Response(representation, status=status.HTTP_200_OK)
 
     @action(methods=['get', 'delete'], detail=True)

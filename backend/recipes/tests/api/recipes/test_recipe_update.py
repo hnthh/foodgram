@@ -25,6 +25,7 @@ def test_ok(as_user, ingredients, tags):
 
     got = as_user.put(url, data, format='json')
 
+    assert not got['is_favorited']
     assert got['name'] == data['name']
     assert got['text'] == data['text']
     assert got['cooking_time'] == data['cooking_time']

@@ -1,8 +1,23 @@
 from config.models import DefaultQuerySet, TimestampedModel, models
+from django.db.models import Exists, OuterRef
 
 
 class RecipeQuerySet(DefaultQuerySet):
-    pass
+
+    def for_detail(self, pk, user):
+        qs = self.for_viewset(user)
+        return qs.get(id=pk)
+
+    def for_viewset(self, user):
+        from recipes.models import Favorite, ShoppingCart
+
+        if not user.is_authenticated:
+            return self.all()
+
+        return self.annotate(
+            is_favorited=Exists(Favorite.objects.filter(recipe=OuterRef('pk'), user=user)),
+            is_in_shopping_cart=Exists(ShoppingCart.objects.filter(recipe=OuterRef('pk'), user=user)),
+        )
 
 
 class Recipe(TimestampedModel):
@@ -23,9 +38,6 @@ class Recipe(TimestampedModel):
 
     class Meta:
         constraints = (
-            models.UniqueConstraint(
-                fields=('author', 'name'),
-                name='unique_author_recipename',
-            ),
+            models.UniqueConstraint(fields=('author', 'name'), name='unique_author_recipename'),
         )
         ordering = ('-created', '-modified')

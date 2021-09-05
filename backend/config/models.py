@@ -17,9 +17,7 @@ class DefaultQuerySet(models.QuerySet):
 
     @classmethod
     def as_manager(cls):
-        manager = DefaultManager.from_queryset(cls)()
-        manager._built_with_as_manager = True
-        return manager
+        return DefaultManager.from_queryset(cls)()
 
     as_manager.queryset_only = True
 
