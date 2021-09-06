@@ -32,15 +32,22 @@ class DefaultQuerySet(models.QuerySet):
 
 
 class DefaultManager(models.Manager):
+    Q = None
+
+    @classmethod
+    def as_manager(cls):
+        return DefaultManager.from_queryset(cls)()
+
+    as_manager.queryset_only = True
 
     def __getattr__(self, name):
-        if hasattr(self._queryset_class, 'Q') and hasattr(self._queryset_class.Q, name):
-            return getattr(self.get_queryset(), name)
+        if self.Q is not None and hasattr(self.Q, name):
+            return lambda *args: self.filter(getattr(self.Q, name)())
 
-        raise AttributeError(
-            f'Nor {self.__class__}, nor {self._queryset_class.__name__} or '
-            f'{self._queryset_class.__name__}.Q does not have `{name}` defined.',
-        )
+        raise AttributeError()
+
+    def with_last_update(self):
+        return self.annotate(last_update=Coalesce(F('modified'), F('created')))
 
 
 class DefaultModel(models.Model):

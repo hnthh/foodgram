@@ -1,18 +1,20 @@
 from config.models import DefaultQuerySet, TimestampedModel, models
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Value
 
 
 class RecipeQuerySet(DefaultQuerySet):
 
     def for_detail(self, pk, user):
-        qs = self.for_viewset(user)
-        return qs.get(id=pk)
+        return self.for_viewset(user).get(id=pk)
 
     def for_viewset(self, user):
         from recipes.models import Favorite, ShoppingCart
 
         if not user.is_authenticated:
-            return self.all()
+            return self.annotate(
+                is_favorited=Value(False),
+                is_in_shopping_cart=Value(False),
+            )
 
         return self.annotate(
             is_favorited=Exists(Favorite.objects.filter(recipe=OuterRef('pk'), user=user)),

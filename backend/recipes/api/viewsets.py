@@ -12,10 +12,6 @@ from recipes.services.delete_from_favorites_and_shopping_cart import (
     DeleteFromFavorites,
     DeleteFromShoppingCart,
 )
-from recipes.services.recipe_creator_updater import (
-    RecipeCreator,
-    RecipeUpdater,
-)
 from recipes.services.shopping_cart_pdf_creator import ShoppingCartPDFCreator
 from rest_framework import status
 from rest_framework.decorators import action
@@ -50,26 +46,10 @@ class RecipeViewSet(AppViewSet):
     def get_queryset(self):
         return Recipe.objects.for_viewset(self.request.user)
 
-    def create(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        recipe = RecipeCreator(**serializer.validated_data)()
-        qs = Recipe.objects.for_detail(recipe.id, request.user)
-
-        representation = self.serializer_class(qs, context={'request': request}).data
-        return Response(representation, status=status.HTTP_201_CREATED)
-
-    def update(self, request, **kwargs):
-        recipe = self.get_object()
-        serializer = self.get_serializer(recipe, data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        RecipeUpdater(recipe, **serializer.validated_data)()
-        updated = self.get_object()
-
-        representation = self.serializer_class(updated, context={'request': request}).data
-        return Response(representation, status=status.HTTP_200_OK)
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({'action': self.action})
+        return context
 
     @action(methods=['get', 'delete'], detail=True)
     def favorite(self, request, pk):

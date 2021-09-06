@@ -1,6 +1,10 @@
 from drf_extra_fields.fields import Base64ImageField
 from ingredients.models import Ingredient, RecipeIngredient
 from recipes.models import Favorite, Recipe, ShoppingCart
+from recipes.services.recipe_creator_updater import (
+    RecipeCreator,
+    RecipeUpdater,
+)
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from tags.api.serializers import TagSerializer
@@ -33,8 +37,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         many=True,
         source='recipeingredient_set',
     )
-    is_favorited = serializers.BooleanField(read_only=True, default=False)
-    is_in_shopping_cart = serializers.BooleanField(read_only=True, default=False)
+    is_favorited = serializers.BooleanField(read_only=True)
+    is_in_shopping_cart = serializers.BooleanField(read_only=True)
     tags = TagSerializer(many=True)
     author = UserSerializer(read_only=True)
 
@@ -78,6 +82,21 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             'text',
             'cooking_time',
         )
+
+    def to_representation(self, recipe):
+        request, *_, action = self.context.values()
+
+        qs = Recipe.objects.for_viewset(request.user)
+        if action != 'retrieve':
+            qs = Recipe.objects.for_detail(recipe.id, request.user)
+
+        return RecipeSerializer(qs, context={'request': request}).data
+
+    def create(self, data):
+        return RecipeCreator(**data)()
+
+    def update(self, recipe, data):
+        return RecipeUpdater(recipe, **data)()
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
