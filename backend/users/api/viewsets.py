@@ -52,8 +52,8 @@ class UserViewSet(DjoserUserViewSet):
         return self.list(request)
 
     def get_queryset(self):
-        if self.action == 'subscriptions':
-            return User.objects.filter(
-                following__user=self.request.user,
-            )
-        return self.queryset
+        queryset = User.objects.for_subscriptions(self.request.user)
+
+        if self.action != 'subscriptions':
+            return self.queryset
+        return queryset
