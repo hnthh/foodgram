@@ -28,9 +28,9 @@ class User(AbstractUser):
         return name.strip()
 
     def subscribe(self, to):
-        from users.services.subscriber import Subscriber
+        from users.services import Subscriber
         return Subscriber(self, to)()
 
-    def unsubscribe(self, to):
-        from users.services.unsubscriber import Unsubscriber
-        return Unsubscriber(self, to)()
+    def unsubscribe(self, fromm):
+        from users.services import Unsubscriber
+        return Unsubscriber(self, fromm)()
