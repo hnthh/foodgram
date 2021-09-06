@@ -27,7 +27,7 @@ class RecipeQuerySet(DefaultQuerySet):
 
 
 class Recipe(TimestampedModel):
-    objects: RecipeQuerySet = RecipeQuerySet.as_manager()
+    objects = RecipeQuerySet.as_manager()
 
     author = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='recipes')
     name = models.CharField(max_length=256)

@@ -1,20 +1,10 @@
-from config.models import DefaultQuerySet, TimestampedModel
-from django.contrib.auth import get_user_model
-from django.db import models
+from config.models import TimestampedModel, models
 from django.db.models import F
-
-User = get_user_model()
-
-
-class SubscribeQuerySet(DefaultQuerySet):
-    pass
 
 
 class Subscribe(TimestampedModel):
-    objects = SubscribeQuerySet.as_manager()
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='followers')
+    author = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='following')
 
     class Meta:
         constraints = (
