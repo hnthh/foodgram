@@ -4,15 +4,12 @@ from django.http import FileResponse
 from recipes.api import serializers
 from recipes.filters import RecipeFilter
 from recipes.models import Favorite, Recipe, ShoppingCart
-from recipes.services.add_to_favorites_and_shopping_cart import (
+from recipes.services import (
     AddToFavorites,
     AddToShoppingCart,
-)
-from recipes.services.delete_from_favorites_and_shopping_cart import (
     DeleteFromFavorites,
     DeleteFromShoppingCart,
 )
-from recipes.services.shopping_cart_pdf_creator import ShoppingCartPDFCreator
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -88,6 +85,8 @@ class RecipeViewSet(AppViewSet):
 
     @action(detail=False)
     def download_shopping_cart(self, request):
+        from recipes.services import ShoppingCartPDFCreator
+
         pdf = ShoppingCartPDFCreator(user=request.user, font='IBMPlexMono-ExtraLightItalic')()
 
         return FileResponse(

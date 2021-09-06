@@ -22,7 +22,7 @@ class RecipeQuerySet(DefaultQuerySet):
         )
 
     def create_with_ingredients_and_tags(self, **data):
-        from recipes.services.recipe_creator_updater import RecipeCreator
+        from recipes.services import RecipeCreator
         return RecipeCreator(**data)()
 
 
@@ -49,5 +49,5 @@ class Recipe(TimestampedModel):
         ordering = ('-created', '-modified')
 
     def update(self, **data):
-        from recipes.services.recipe_creator_updater import RecipeUpdater
+        from recipes.services import RecipeUpdater
         return RecipeUpdater(self, **data)()
