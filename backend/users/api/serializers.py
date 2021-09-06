@@ -46,9 +46,7 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
             'last_name',
             'password',
         )
-        extra_kwargs = {
-            'password': {'write_only': True},
-        }
+        extra_kwargs = {'password': {'write_only': True}}
 
 
 class SubscriptionSerializer(UserSerializer):
@@ -71,9 +69,7 @@ class SubscriptionSerializer(UserSerializer):
     def get_recipes(self, user):
         from recipes.api.serializers import RecipeSubscriptionSerializer
 
-        recipes_limit = self.context['request'].query_params.get(
-            'recipes_limit',
-        )
+        recipes_limit = self.context['request'].query_params.get('recipes_limit')
         queryset = Recipe.objects.filter(author=user)
         if recipes_limit is not None:
             queryset = queryset[:int(recipes_limit)]
@@ -102,6 +98,17 @@ class SubscribeSerializer(ModelSerializer):
         if data['user'] == data['author']:
             raise serializers.ValidationError(_('You cannot subscribe to yourself'))
         return data
+
+    def create(self, data):
+        user, author = data.values()
+        return user.subscribe(author)
+
+    def to_representation(self, subscription):
+        from users.api.serializers import SubscriptionSerializer
+        return SubscriptionSerializer(
+            subscription.author,
+            context={'request': self.context['request']},
+        ).data
 
 
 class UnsubscribeSerializer(ModelSerializer):

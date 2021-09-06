@@ -6,6 +6,7 @@ __all__ = [
     'models',
     'DefaultManager',
     'DefaultModel',
+    'DefaultUserQuerySet',
     'DefaultQuerySet',
     'TimestampedModel',
 ]
@@ -28,7 +29,6 @@ class DefaultQuerySet(models.QuerySet):
 
 
 class DefaultManager(models.Manager):
-
     def __getattr__(self, name):
         if hasattr(self._queryset_class, 'Q') and hasattr(self._queryset_class.Q, name):
             return getattr(self.get_queryset(), name)
@@ -53,7 +53,6 @@ class DefaultModel(models.Model):
 
 
 class TimestampedModel(DefaultModel, Timestamped):
-
     class Meta:
         abstract = True
 
@@ -63,7 +62,6 @@ class UserManager(_UserManager):
 
 
 class DefaultUserQuerySet(DefaultQuerySet):
-
     @classmethod
     def as_manager(cls):
         return UserManager.from_queryset(cls)()

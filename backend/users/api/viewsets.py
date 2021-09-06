@@ -25,19 +25,24 @@ class UserViewSet(DjoserUserViewSet):
     def update(self, request, **kwargs):
         raise MethodNotAllowed(request.method)
 
+    def get_queryset(self):
+        queryset = User.objects.for_subscriptions(self.request.user)
+
+        if self.action != 'subscriptions':
+            return self.queryset
+        return queryset
+
     @action(methods=['get', 'delete'], detail=True)
     def subscribe(self, request, id):
         method = request.method.lower()
         return self.subscribe_method_dispatcher[method](self, request, id)
 
     def _subscribe(self, request, pk):
-        author = User.objects.get(pk=pk)
+        serializer = SubscribeSerializer(data={'author': pk}, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-        SubscribeSerializer.do(data={'author': pk}, context={'request': request})
-        request.user.subscribe(author)
-
-        representation = SubscriptionSerializer(author, context={'request': request})
-        return Response(representation.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def _unsubscribe(self, request, pk):
         author = User.objects.get(pk=pk)
@@ -50,10 +55,3 @@ class UserViewSet(DjoserUserViewSet):
     @action(detail=False, serializer_class=SubscriptionSerializer)
     def subscriptions(self, request):
         return self.list(request)
-
-    def get_queryset(self):
-        queryset = User.objects.for_subscriptions(self.request.user)
-
-        if self.action != 'subscriptions':
-            return self.queryset
-        return queryset

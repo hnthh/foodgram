@@ -7,7 +7,7 @@ class Subscriber:
         self.author = author
 
     def __call__(self, *args, **kwargs):
-        self.subscribe()
+        return self.subscribe()
 
     def subscribe(self):
-        Subscribe.objects.create(user=self.user, author=self.author)
+        return Subscribe.objects.create(user=self.user, author=self.author)
