@@ -21,6 +21,10 @@ class RecipeQuerySet(DefaultQuerySet):
             is_in_shopping_cart=Exists(ShoppingCart.objects.filter(recipe=OuterRef('pk'), user=user)),
         )
 
+    def create_with_ingredients_and_tags(self, **data):
+        from recipes.services.recipe_creator_updater import RecipeCreator
+        return RecipeCreator(**data)()
+
 
 class Recipe(TimestampedModel):
     objects: RecipeQuerySet = RecipeQuerySet.as_manager()
@@ -43,3 +47,7 @@ class Recipe(TimestampedModel):
             models.UniqueConstraint(fields=('author', 'name'), name='unique_author_recipename'),
         )
         ordering = ('-created', '-modified')
+
+    def update(self, **data):
+        from recipes.services.recipe_creator_updater import RecipeUpdater
+        return RecipeUpdater(self, **data)()
