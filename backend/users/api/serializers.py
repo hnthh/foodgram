@@ -18,14 +18,7 @@ class UserSerializer(DoMixin, DjoserUserSerializer):
 
     class Meta:
         model = User
-        fields = (
-            'id',
-            'email',
-            'username',
-            'first_name',
-            'last_name',
-            'is_subscribed',
-        )
+        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'is_subscribed')
 
     def to_representation(self, user):
         request = self.context['request']
@@ -39,15 +32,7 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
 
     class Meta:
         model = User
-        fields = (
-            'id',
-            'email',
-            'username',
-            'first_name',
-            'last_name',
-            'password',
-        )
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'password')
 
 
 class SubscriptionSerializer(UserSerializer):
@@ -119,9 +104,7 @@ class UnsubscribeSerializer(ModelSerializer):
         fields = ('user', 'author')
 
     def validate(self, data):
-        user, author = data.values()
-
-        subscription = Subscribe.objects.filter(user=user, author=author).first()
-        if subscription is None:
+        subscription = Subscribe.objects.filter(**data)
+        if not subscription:
             raise serializers.ValidationError(_('Subscription does not exist'))
         return data
