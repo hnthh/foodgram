@@ -52,7 +52,7 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
 
 class SubscriptionSerializer(UserSerializer):
     recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.SerializerMethodField()
+    recipes_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = User
@@ -76,9 +76,6 @@ class SubscriptionSerializer(UserSerializer):
             queryset = queryset[:int(recipes_limit)]
 
         return RecipeSubscriptionSerializer(queryset, many=True).data
-
-    def get_recipes_count(self, user):
-        return user.recipes.count()
 
 
 class SubscribeSerializer(ModelSerializer):
