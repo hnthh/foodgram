@@ -7,14 +7,17 @@ class RecipeQuerySet(DefaultQuerySet):
     def for_detail(self, pk, user):
         return self.for_viewset(user).get(id=pk)
 
+    def for_anon(self):
+        return self.annotate(
+            is_favorited=Value(False),
+            is_in_shopping_cart=Value(False),
+        )
+
     def for_viewset(self, user):
         from recipes.models import Favorite, ShoppingCart
 
         if not user.is_authenticated:
-            return self.annotate(
-                is_favorited=Value(False),
-                is_in_shopping_cart=Value(False),
-            )
+            return self.for_anon()
 
         return self.annotate(
             is_favorited=Exists(Favorite.objects.filter(recipe=OuterRef('pk'), user=user)),

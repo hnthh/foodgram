@@ -11,13 +11,13 @@ class UserQuerySet(DefaultUserQuerySet):
         def user_following(user):
             return Q(following__user=user)
 
+    def for_detail(self, pk, user):
+        return self.for_viewset(user).get(id=pk)
+
     def for_anon(self):
         return self.annotate(
             is_subscribed=Value(False),
         )
-
-    def for_detail(self, pk, user):
-        return self.for_viewset(user).get(id=pk)
 
     def for_viewset(self, user):
         from users.models import Subscribe
