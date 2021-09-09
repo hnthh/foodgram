@@ -36,25 +36,17 @@ class MultiPermissionMixin:
         return (permission() for permission in permissions)
 
 
-class SerializerUpdatedContextMixin:
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context.update({'action': self.action})
-        return context
-
-
 class ReadOnlyAppViewSet(MultiSerializerMixin, MultiPermissionMixin, ReadOnlyModelViewSet):
     pass
 
 
-class AppUserViewSet(SerializerUpdatedContextMixin, DjoserUserViewSet):
+class AppUserViewSet(DjoserUserViewSet):
     pass
 
 
 class AppViewSet(
     MultiSerializerMixin,
     MultiPermissionMixin,
-    SerializerUpdatedContextMixin,
     ModelViewSet,
 ):
     pass
