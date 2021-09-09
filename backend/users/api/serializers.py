@@ -67,15 +67,18 @@ class SubscriptionSerializer(UserSerializer):
             'recipes_count',
         )
 
-    def get_recipes(self, user):
+    def get_recipes(self, author):
         from recipes.api.serializers import RecipeSubscriptionSerializer
 
-        recipes_limit = self.context['request'].query_params.get('recipes_limit')
-        queryset = Recipe.objects.filter(author=user)
-        if recipes_limit is not None:
-            queryset = queryset[:int(recipes_limit)]
+        limit = self.context['request'].query_params.get('recipes_limit')
 
-        return RecipeSubscriptionSerializer(queryset, many=True).data
+        qs = (
+            Recipe.objects.for_author(author)[:int(limit)]
+            if limit is not None
+            else Recipe.objects.for_author(author)
+        )
+
+        return RecipeSubscriptionSerializer(qs, many=True).data
 
 
 class SubscribeSerializer(ModelSerializer):
@@ -103,11 +106,9 @@ class SubscribeSerializer(ModelSerializer):
 
     def to_representation(self, subscription):
         from users.api.serializers import SubscriptionSerializer
+
         qs = User.objects.for_detail(subscription.author.id, subscription.user)
-        return SubscriptionSerializer(
-            qs,
-            context=self.context,
-        ).data
+        return SubscriptionSerializer(qs, context=self.context).data
 
 
 class UnsubscribeSerializer(ModelSerializer):

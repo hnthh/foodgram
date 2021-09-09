@@ -1,8 +1,13 @@
 from config.models import DefaultQuerySet, TimestampedModel, models
-from django.db.models import Exists, OuterRef, Value
+from django.db.models import Exists, OuterRef, Q, Value
 
 
 class RecipeQuerySet(DefaultQuerySet):
+
+    class Q:  # noqa: PIE798
+        @staticmethod
+        def author(user):
+            return Q(author=user)
 
     def for_detail(self, pk, user):
         return self.for_viewset(user).get(id=pk)
@@ -23,6 +28,14 @@ class RecipeQuerySet(DefaultQuerySet):
             is_favorited=Exists(Favorite.objects.filter(recipe=OuterRef('pk'), user=user)),
             is_in_shopping_cart=Exists(ShoppingCart.objects.filter(recipe=OuterRef('pk'), user=user)),
         )
+
+    def for_author(self, user):
+        qs = self.for_viewset(user)
+
+        if not user.is_authenticated:
+            return self.for_anon()
+
+        return qs.filter(self.Q.author(user))
 
     def create_with_ingredients_and_tags(self, **data):
         from recipes.services import RecipeCreator
