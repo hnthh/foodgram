@@ -104,7 +104,6 @@ class UnsubscribeSerializer(ModelSerializer):
         fields = ('user', 'author')
 
     def validate(self, data):
-        subscription = Subscribe.objects.filter(**data)
-        if not subscription:
+        if not Subscribe.objects.filter(**data).exists():
             raise serializers.ValidationError(_('Subscription does not exist'))
         return data
