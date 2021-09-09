@@ -11,6 +11,11 @@ class UserQuerySet(DefaultUserQuerySet):
         def user_following(user):
             return Q(following__user=user)
 
+    def for_anon(self):
+        return self.annotate(
+            is_subscribed=Value(False),
+        )
+
     def for_detail(self, pk, user):
         return self.for_viewset(user).get(id=pk)
 
@@ -18,9 +23,7 @@ class UserQuerySet(DefaultUserQuerySet):
         from users.models import Subscribe
 
         if not user.is_authenticated:
-            return self.annotate(
-                is_subscribed=Value(False),
-            )
+            return self.for_anon()
 
         return self.annotate(
             is_subscribed=Exists(Subscribe.objects.filter(user=user, author=OuterRef('pk'))),
@@ -28,10 +31,9 @@ class UserQuerySet(DefaultUserQuerySet):
 
     def for_subscriptions(self, user):
         qs = self.for_viewset(user)
+
         if not user.is_authenticated:
-            return self.annotate(
-                is_subscribed=Value(False),
-            )
+            return self.for_anon()
 
         return qs.filter(self.Q.user_following(user))
 
