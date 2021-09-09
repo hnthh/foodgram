@@ -93,7 +93,10 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         return recipe.update(**data)
 
 
-class FavoriteSerializer(serializers.ModelSerializer):
+class FavoriteBaseSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault(), write_only=True)
+    recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all(), write_only=True)
+
     id = serializers.ReadOnlyField(source='recipe.id')
     name = serializers.ReadOnlyField(source='recipe.name')
     cooking_time = serializers.ReadOnlyField(source='recipe.cooking_time')
@@ -101,18 +104,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Favorite
-        fields = (
-            'id',
-            'name',
-            'image',
-            'cooking_time',
-            'user',
-            'recipe',
-        )
-        extra_kwargs = {
-            'user': {'write_only': True},
-            'recipe': {'write_only': True},
-        }
+        fields = ('id', 'name', 'image', 'cooking_time', 'user', 'recipe')
         validators = [
             UniqueTogetherValidator(
                 queryset=Favorite.objects.all(),
@@ -128,26 +120,14 @@ class FavoriteSerializer(serializers.ModelSerializer):
         return request.build_absolute_uri(image_url)
 
 
-class ShoppingCartSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField(source='recipe.id')
-    name = serializers.ReadOnlyField(source='recipe.name')
-    cooking_time = serializers.ReadOnlyField(source='recipe.cooking_time')
-    image = serializers.SerializerMethodField()
+class FavoriteSerializer(FavoriteBaseSerializer):
+    pass
 
-    class Meta:
+
+class ShoppingCartSerializer(FavoriteBaseSerializer):
+
+    class Meta(FavoriteBaseSerializer.Meta):
         model = ShoppingCart
-        fields = (
-            'id',
-            'name',
-            'image',
-            'cooking_time',
-            'user',
-            'recipe',
-        )
-        extra_kwargs = {
-            'user': {'write_only': True},
-            'recipe': {'write_only': True},
-        }
         validators = [
             UniqueTogetherValidator(
                 queryset=ShoppingCart.objects.all(),
@@ -155,9 +135,3 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
                 message='ShoppingCartObject already exists',
             ),
         ]
-
-    def get_image(self, ordered):
-        _, recipe = ordered.values()
-        request = self.context.get('request')
-        image_url = recipe.image.url
-        return request.build_absolute_uri(image_url)
