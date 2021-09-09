@@ -14,7 +14,7 @@ User = get_user_model()
 
 
 class UserSerializer(DoMixin, DjoserUserSerializer):
-    is_subscribed = serializers.SerializerMethodField()
+    is_subscribed = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = User
@@ -27,11 +27,12 @@ class UserSerializer(DoMixin, DjoserUserSerializer):
             'is_subscribed',
         )
 
-    def get_is_subscribed(self, author):
-        user = self.context['request'].user
-        if not user.is_authenticated:
-            return False
-        return Subscribe.objects.filter(user=user, author=author).exists()
+    def to_representation(self, user):
+        request = self.context['request']
+
+        qs = self.Meta.model.objects.for_detail(user.pk, request.user)
+
+        return super().to_representation(qs)
 
 
 class UserCreateSerializer(DjoserUserCreateSerializer):
@@ -105,9 +106,10 @@ class SubscribeSerializer(ModelSerializer):
 
     def to_representation(self, subscription):
         from users.api.serializers import SubscriptionSerializer
+        qs = User.objects.for_detail(subscription.author.id, subscription.user)
         return SubscriptionSerializer(
-            subscription.author,
-            context={'request': self.context['request']},
+            qs,
+            context=self.context,
         ).data
 
 

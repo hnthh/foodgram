@@ -1,8 +1,10 @@
 from collections.abc import Iterable
 
+from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 __all__ = [
+    'AppUserViewSet',
     'AppViewSet',
     'ReadOnlyAppViewSet',
 ]
@@ -34,9 +36,25 @@ class MultiPermissionMixin:
         return (permission() for permission in permissions)
 
 
+class SerializerUpdatedContextMixin:
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({'action': self.action})
+        return context
+
+
 class ReadOnlyAppViewSet(MultiSerializerMixin, MultiPermissionMixin, ReadOnlyModelViewSet):
     pass
 
 
-class AppViewSet(MultiSerializerMixin, MultiPermissionMixin, ModelViewSet):
+class AppUserViewSet(SerializerUpdatedContextMixin, DjoserUserViewSet):
+    pass
+
+
+class AppViewSet(
+    MultiSerializerMixin,
+    MultiPermissionMixin,
+    SerializerUpdatedContextMixin,
+    ModelViewSet,
+):
     pass

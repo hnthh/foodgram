@@ -80,13 +80,11 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         )
 
     def to_representation(self, recipe):
-        request, *_, action = self.context.values()
+        request = self.context['request']
 
-        qs = Recipe.objects.for_viewset(request.user)
-        if action != 'retrieve':
-            qs = Recipe.objects.for_detail(recipe.id, request.user)
+        qs = self.Meta.model.objects.for_detail(recipe.pk, request.user)
 
-        return RecipeSerializer(qs, context={'request': request}).data
+        return RecipeSerializer(qs, context=self.context).data
 
     def create(self, data):
         return Recipe.objects.create_with_ingredients_and_tags(**data)

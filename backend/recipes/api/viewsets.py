@@ -43,11 +43,6 @@ class RecipeViewSet(AppViewSet):
     def get_queryset(self):
         return Recipe.objects.for_viewset(self.request.user)
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context.update({'action': self.action})
-        return context
-
     @action(methods=['get', 'delete'], detail=True)
     def favorite(self, request, pk):
         method = request.method.lower()

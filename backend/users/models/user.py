@@ -1,6 +1,6 @@
 from config.models import DefaultUserQuerySet, models
 from django.contrib.auth.models import AbstractUser
-from django.db.models import Q
+from django.db.models import Exists, OuterRef, Q, Value
 from django.utils.translation import gettext_lazy as _
 
 
@@ -11,11 +11,29 @@ class UserQuerySet(DefaultUserQuerySet):
         def user_following(user):
             return Q(following__user=user)
 
-    def for_subscriptions(self, user):
-        if not user.is_authenticated:
-            return self
+    def for_detail(self, pk, user):
+        return self.for_viewset(user).get(id=pk)
 
-        return self.filter(self.Q.user_following(user))
+    def for_viewset(self, user):
+        from users.models import Subscribe
+
+        if not user.is_authenticated:
+            return self.annotate(
+                is_subscribed=Value(False),
+            )
+
+        return self.annotate(
+            is_subscribed=Exists(Subscribe.objects.filter(user=user, author=OuterRef('pk'))),
+        )
+
+    def for_subscriptions(self, user):
+        qs = self.for_viewset(user)
+        if not user.is_authenticated:
+            return self.annotate(
+                is_subscribed=Value(False),
+            )
+
+        return qs.filter(self.Q.user_following(user))
 
 
 class User(AbstractUser):
