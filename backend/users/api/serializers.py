@@ -1,4 +1,4 @@
-from config.serializers import DoMixin, ModelSerializer
+from config.serializers import ModelSerializer
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from djoser.serializers import (
@@ -13,7 +13,7 @@ from users.models import Subscribe
 User = get_user_model()
 
 
-class UserSerializer(DoMixin, DjoserUserSerializer):
+class UserSerializer(DjoserUserSerializer):
     is_subscribed = serializers.BooleanField(read_only=True)
 
     class Meta:

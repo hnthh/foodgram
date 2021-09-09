@@ -39,18 +39,22 @@ class UserViewSet(AppUserViewSet):
         return self.subscribe_method_dispatcher[method](self, request, id)
 
     def _subscribe(self, request, pk):
-        context = self.get_serializer_context()
-        serializer = SubscribeSerializer(data={'author': pk}, context=context)
+        serializer = SubscribeSerializer(
+            data={'author': pk},
+            context=self.get_serializer_context(),
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def _unsubscribe(self, request, pk):
-        context = self.get_serializer_context()
         author = User.objects.get(pk=pk)
 
-        UnsubscribeSerializer.do(data={'author': pk}, context=context)
+        UnsubscribeSerializer.do(
+            data={'author': pk},
+            context=self.get_serializer_context(),
+        )
         request.user.unsubscribe(author)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
