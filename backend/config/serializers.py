@@ -9,8 +9,7 @@ class Do:  # noqa: PIE798
         return instance.is_valid(raise_exception=True)
 
 
-class ModelSerializer(Do, serializers.ModelSerializer):
-
+class GetFieldNames:
     def get_field_names(self, declared_fields, info):
         fields = super().get_field_names(declared_fields, info)
 
@@ -21,3 +20,7 @@ class ModelSerializer(Do, serializers.ModelSerializer):
                 fields = fields + type(fields)(self.Meta.extra_fields)
 
         return fields
+
+
+class ModelSerializer(Do, GetFieldNames, serializers.ModelSerializer):
+    pass
