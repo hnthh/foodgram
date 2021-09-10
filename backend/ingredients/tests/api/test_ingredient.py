@@ -2,11 +2,7 @@ import pytest
 
 pytestmark = [pytest.mark.django_db]
 
-RESPONSE_FIELDS = (
-    'id',
-    'name',
-    'measurement_unit',
-)
+RESPONSE_FIELDS = ('id', 'name', 'measurement_unit')
 
 
 def test_ok(as_anon, ingredient):

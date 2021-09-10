@@ -4,11 +4,7 @@ pytestmark = [pytest.mark.django_db]
 
 URL = '/api/ingredients/'
 
-RESPONSE_FIELDS = (
-    'id',
-    'name',
-    'measurement_unit',
-)
+RESPONSE_FIELDS = ('id', 'name', 'measurement_unit')
 
 
 def test_ok(as_anon, ingredients):
@@ -22,6 +18,7 @@ def test_ok(as_anon, ingredients):
 
 def test_filter_by_name(as_anon, load_ingredients_command_exec):
     got = as_anon.get(URL, {'name': {'жар'}})
+
     assert len(got) == 7
     assert 'жар' in got[6]['name']
 
