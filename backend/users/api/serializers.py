@@ -1,4 +1,4 @@
-from config.serializers import ModelSerializer
+from config.serializers import ModelSerializer, serializers
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from djoser.serializers import (
@@ -6,7 +6,6 @@ from djoser.serializers import (
 )
 from djoser.serializers import UserSerializer as DjoserUserSerializer
 from recipes.models import Recipe
-from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from users.models import Subscribe
 

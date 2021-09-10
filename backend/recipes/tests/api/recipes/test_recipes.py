@@ -28,4 +28,7 @@ def test_ok(as_anon, as_user, ingredients, tags):
 
     assert tuple(got.keys()) == PAGINATION_PARAMS
     assert len(got['results']) == 2
-    assert tuple(got['results'][0].keys()) == RECIPE_PARAMS
+    assert len(tuple(got['results'][0])) == len(RECIPE_PARAMS)
+
+    for param in got['results'][0]:
+        assert param in RECIPE_PARAMS
