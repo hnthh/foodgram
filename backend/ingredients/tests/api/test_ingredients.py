@@ -20,12 +20,10 @@ def test_ok(as_anon, ingredients):
         assert got[0][field] == getattr(ingredient, field)
 
 
-def test_filter_by_name(
-    as_anon,
-    load_ingredients_command_exec,
-):
-    got = as_anon.get(URL, {'name': {'прип'}})
-    assert got[2]['name'].startswith('припра')
+def test_filter_by_name(as_anon, load_ingredients_command_exec):
+    got = as_anon.get(URL, {'name': {'жар'}})
+    assert len(got) == 7
+    assert 'жар' in got[6]['name']
 
 
 def test_method_not_allowed(as_user):
