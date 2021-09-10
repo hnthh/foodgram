@@ -1,5 +1,5 @@
-from config.viewsets import AppUserViewSet
 from django.contrib.auth import get_user_model
+from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import MethodNotAllowed
@@ -13,7 +13,7 @@ from users.api.serializers import (
 User = get_user_model()
 
 
-class UserViewSet(AppUserViewSet):
+class UserViewSet(DjoserUserViewSet):
     subscribe_method_dispatcher = {
         'get': lambda self, request, pk: self._subscribe(request, pk),
         'delete': lambda self, request, pk: self._unsubscribe(request, pk),

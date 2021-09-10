@@ -1,13 +1,11 @@
 from collections.abc import Iterable
 
-from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
-__all__ = [
-    'AppUserViewSet',
+__all__ = (
     'AppViewSet',
     'ReadOnlyAppViewSet',
-]
+)
 
 
 class MultiSerializerMixin:
@@ -40,13 +38,5 @@ class ReadOnlyAppViewSet(MultiSerializerMixin, MultiPermissionMixin, ReadOnlyMod
     pass
 
 
-class AppUserViewSet(DjoserUserViewSet):
-    pass
-
-
-class AppViewSet(
-    MultiSerializerMixin,
-    MultiPermissionMixin,
-    ModelViewSet,
-):
+class AppViewSet(MultiSerializerMixin, MultiPermissionMixin, ModelViewSet):
     pass
