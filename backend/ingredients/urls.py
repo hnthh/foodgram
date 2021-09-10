@@ -3,7 +3,7 @@ from ingredients.api.views import IngredientViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register('ingredients', IngredientViewSet, basename='ingredient')
+router.register('', IngredientViewSet, basename='ingredient')
 
 urlpatterns = [
     path('', include(router.urls)),
