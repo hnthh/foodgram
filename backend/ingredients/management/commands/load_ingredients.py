@@ -12,9 +12,7 @@ class Command(BaseCommand):
         try:
             file = open('ingredients/data/ingredients.csv')  # noqa: SIM115
         except OSError:
-            raise CommandError(
-                'Could not open ingredients.csv file',
-            )
+            raise CommandError('Could not open ingredients.csv file')
 
         with file:
             reader = csv.reader(file)
