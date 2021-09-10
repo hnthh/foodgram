@@ -44,13 +44,13 @@ class RecipeSubscriptionSerializer(RecipeSerializer):
 
 class RecipeCreateUpdateSerializer(ModelSerializer):
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    image = Base64ImageField()
     ingredients = RecipeIngredientSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
+    image = Base64ImageField()
 
     class Meta:
         model = Recipe
-        fields = ('author', 'ingredients', 'tags', 'image', 'name', 'text', 'cooking_time')
+        fields = '__all__'
 
     def to_representation(self, recipe):
         request = self.context['request']
@@ -77,7 +77,7 @@ class FavoriteBaseSerializer(ModelSerializer):
 
     class Meta:
         model = Favorite
-        fields = ('id', 'name', 'image', 'cooking_time', 'user', 'recipe')
+        fields = '__all__'
         validators = [
             UniqueTogetherValidator(
                 queryset=Favorite.objects.all(),

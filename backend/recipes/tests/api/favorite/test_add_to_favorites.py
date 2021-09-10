@@ -3,12 +3,7 @@ from recipes.models import Favorite
 
 pytestmark = [pytest.mark.django_db]
 
-RESPONSE_FIELDS = (
-    'id',
-    'name',
-    'image',
-    'cooking_time',
-)
+RESPONSE_FIELDS = ('id', 'name', 'image', 'cooking_time')
 
 
 def test_ok(as_user, user, recipe):
@@ -16,7 +11,10 @@ def test_ok(as_user, user, recipe):
 
     got = as_user.get(url, expected_status=201)
     assert Favorite.objects.filter(user=user, recipe=recipe).exists()
-    assert tuple(got.keys()) == RESPONSE_FIELDS
+    assert len(got) == len(RESPONSE_FIELDS)
+
+    for field in got:
+        assert field in RESPONSE_FIELDS
 
     for field in ('id', 'name', 'cooking_time'):
         assert got[field] == getattr(recipe, field)
