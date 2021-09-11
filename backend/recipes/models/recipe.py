@@ -1,5 +1,6 @@
 from config.models import DefaultQuerySet, TimestampedModel, models
 from django.db.models import Exists, OuterRef, Q, Value
+from django.utils.translation import gettext_lazy as _
 
 
 class RecipeQuerySet(DefaultQuerySet):
@@ -45,20 +46,22 @@ class RecipeQuerySet(DefaultQuerySet):
 class Recipe(TimestampedModel):
     objects = RecipeQuerySet.as_manager()
 
-    author = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='recipes')
-    name = models.CharField(max_length=256)
-    text = models.TextField()
-    image = models.ImageField(upload_to='recipes/images/')
-    cooking_time = models.PositiveSmallIntegerField()
+    author = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    name = models.CharField(_('recipe name'), max_length=256)
+    text = models.TextField(_('recipe description'))
+    image = models.ImageField(_('image'), upload_to='recipes/images/')
+    cooking_time = models.PositiveSmallIntegerField(_('cooking time'))
     ingredients = models.ManyToManyField(
         'ingredients.Ingredient',
         through='ingredients.RecipeIngredient',
-        related_name='recipes',
         blank=True,
     )
-    tags = models.ManyToManyField('tags.Tag', related_name='recipes', blank=True)
+    tags = models.ManyToManyField('tags.Tag', blank=True)
 
     class Meta:
+        verbose_name = _('recipe')
+        verbose_name_plural = _('recipes')
+        default_related_name = 'recipes'
         constraints = (
             models.UniqueConstraint(fields=('author', 'name'), name='unique_author_recipename'),
         )
