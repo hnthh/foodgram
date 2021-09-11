@@ -1,10 +1,10 @@
+from config.models import DefaultModel, models
 from config.validators import GteMinValueValidator
 from django.core.validators import MaxValueValidator
-from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-class RecipeIngredient(models.Model):
+class RecipeIngredient(DefaultModel):
     ingredient = models.ForeignKey(
         'ingredients.Ingredient',
         related_name='ingredients',
