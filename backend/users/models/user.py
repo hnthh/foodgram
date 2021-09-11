@@ -51,6 +51,8 @@ class User(AbstractUser):
 
     class Meta:
         swappable = 'AUTH_USER_MODEL'
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
         constraints = (
             models.UniqueConstraint(
                 fields=('email', 'username'),
