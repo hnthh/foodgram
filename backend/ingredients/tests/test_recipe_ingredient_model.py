@@ -29,3 +29,10 @@ def test_amount_lt(recipe, ingredient):
             recipe=recipe,
             amount=5001,
         )
+
+
+@pytest.mark.xfail(reason='NOT NULL constraint failed raised instead of UNIQUE constraint failed')
+def test_unique_recipe_ingredient_constraint(recipe, ingredient):
+
+    with pytest.raises(IntegrityError, match='UNIQUE constraint failed: unique_recipe_ingredient'):
+        RecipeIngredient.objects.create(recipe=recipe, ingredient=ingredient)
