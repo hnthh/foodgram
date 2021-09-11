@@ -9,6 +9,7 @@ class Favorite(DefaultModel):
     class Meta:
         verbose_name = _('favourites')
         verbose_name_plural = _('favourites')
+        default_related_name = 'favourites'
         constraints = (
             models.UniqueConstraint(
                 fields=('user', 'recipe'),

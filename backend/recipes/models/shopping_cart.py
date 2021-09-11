@@ -1,22 +1,15 @@
-from django.contrib.auth import get_user_model
-from django.db import models
-
-User = get_user_model()
+from config.models import DefaultModel, models
+from django.utils.translation import gettext_lazy as _
 
 
-class ShoppingCart(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='purchases',
-    )
-    recipe = models.ForeignKey(
-        'recipes.Recipe',
-        on_delete=models.CASCADE,
-        related_name='purchases',
-    )
+class ShoppingCart(DefaultModel):
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    recipe = models.ForeignKey('recipes.Recipe', on_delete=models.CASCADE)
 
     class Meta:
+        verbose_name = _('purchase')
+        verbose_name_plural = _('purchases')
+        default_related_name = 'purchases'
         constraints = (
             models.UniqueConstraint(
                 fields=('user', 'recipe'),

@@ -27,7 +27,7 @@ class RecipeFilter(filters.FilterSet):
     @recipe_filter_bool_param
     def filter_is_favorited(self, queryset, name, value):
         return queryset.filter(
-            favorite__user=self.request.user,
+            favourites__user=self.request.user,
         )
 
     @recipe_filter_bool_param
