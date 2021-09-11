@@ -12,9 +12,11 @@ class RecipeIngredient(models.Model):
     )
     recipe = models.ForeignKey(
         'recipes.Recipe',
+        related_name='ingredients',
         on_delete=models.CASCADE,
     )
     amount = models.DecimalField(
+        _('amount'),
         decimal_places=1,
         max_digits=5,
         validators=[
@@ -24,19 +26,12 @@ class RecipeIngredient(models.Model):
     )
 
     class Meta:
+        verbose_name = _('recipe ingredient')
+        verbose_name_plural = _('recipe ingredients')
         constraints = (
-            models.CheckConstraint(
-                name='amount_gt_0',
-                check=models.Q(amount__gt=0),
-            ),
-            models.CheckConstraint(
-                name='amount_lt_5000',
-                check=models.Q(amount__lt=5000),
-            ),
-            models.UniqueConstraint(
-                fields=('recipe', 'ingredient'),
-                name='unique_recipe_ingredient',
-            ),
+            models.CheckConstraint(name='amount_gt_0', check=models.Q(amount__gt=0)),
+            models.CheckConstraint(name='amount_lt_5000', check=models.Q(amount__lt=5000)),
+            models.UniqueConstraint(fields=('recipe', 'ingredient'), name='unique_recipe_ingredient'),
         )
 
     def __str__(self):

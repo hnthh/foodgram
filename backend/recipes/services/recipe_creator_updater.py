@@ -14,7 +14,7 @@ class BaseService:
     def _set_tags(self, recipe):
         recipe.tags.set(self.tags)
 
-    def _create_recipe_ingredients(self, recipe):
+    def _set_recipe_ingredients(self, recipe):
         from ingredients.models import RecipeIngredient
 
         ingredients = list()
@@ -31,7 +31,7 @@ class RecipeCreator(BaseService):
     def __call__(self):
         recipe = self.create()
 
-        self._create_recipe_ingredients(recipe)
+        self._set_recipe_ingredients(recipe)
         self._set_tags(recipe)
 
         return recipe
@@ -57,13 +57,13 @@ class RecipeUpdater(BaseService):
 
         recipe = self.update()
 
-        self._create_recipe_ingredients(recipe)
+        self._set_recipe_ingredients(recipe)
         self._set_tags(recipe)
 
         return recipe
 
     def _remove_nested_objects(self):
-        self.recipe.recipeingredient_set.all().delete()
+        self.recipe.ingredients.all().delete()
         self.recipe.tags.remove()
 
     def update(self):
