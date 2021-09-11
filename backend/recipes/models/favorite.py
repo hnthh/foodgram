@@ -1,20 +1,14 @@
-from django.contrib.auth import get_user_model
-from django.db import models
-
-User = get_user_model()
+from config.models import DefaultModel, models
+from django.utils.translation import gettext_lazy as _
 
 
-class Favorite(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-    )
-    recipe = models.ForeignKey(
-        'recipes.Recipe',
-        on_delete=models.CASCADE,
-    )
+class Favorite(DefaultModel):
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    recipe = models.ForeignKey('recipes.Recipe', on_delete=models.CASCADE)
 
     class Meta:
+        verbose_name = _('favourites')
+        verbose_name_plural = _('favourites')
         constraints = (
             models.UniqueConstraint(
                 fields=('user', 'recipe'),
