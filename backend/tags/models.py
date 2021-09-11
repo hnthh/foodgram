@@ -1,18 +1,14 @@
-from django.contrib.auth import get_user_model
+from config.models import DefaultModel, models
 from django.core.validators import RegexValidator
-from django.db import models
-
-User = get_user_model()
+from django.utils.translation import gettext_lazy as _
 
 HEX_RE = '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
 
 
-class Tag(models.Model):
-    name = models.CharField(
-        unique=True,
-        max_length=20,
-    )
+class Tag(DefaultModel):
+    name = models.CharField(_('tag name'), unique=True, max_length=20)
     color = models.CharField(
+        _('tag color'),
         unique=True,
         max_length=7,
         validators=[
@@ -22,17 +18,15 @@ class Tag(models.Model):
             ),
         ],
     )
-    slug = models.SlugField(
-        unique=True,
-    )
+    slug = models.SlugField(_('slug'), unique=True)
 
     class Meta:
+        verbose_name = _('tag')
+        verbose_name_plural = _('tags')
+        default_related_name = 'tags'
         constraints = (
             models.CheckConstraint(
                 name='HEX_color',
                 check=models.Q(color__regex=HEX_RE),
             ),
         )
-
-    def __str__(self):
-        return self.name
