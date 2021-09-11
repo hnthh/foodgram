@@ -23,7 +23,7 @@ class RecipeIngredientSerializer(ModelSerializer):
 
 
 class RecipeSerializer(ModelSerializer):
-    ingredients = RecipeIngredientSerializer(many=True)
+    ingredients = RecipeIngredientSerializer(many=True, source='recipeingredients')
     is_favorited = serializers.BooleanField(read_only=True)
     is_in_shopping_cart = serializers.BooleanField(read_only=True)
     tags = TagSerializer(many=True)

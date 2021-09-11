@@ -13,7 +13,7 @@ class ShoppingCart(DefaultModel):
         constraints = (
             models.UniqueConstraint(
                 fields=('user', 'recipe'),
-                name='unique_user_recipe',
+                name='unique_purchase_user_recipe',
             ),
         )
 

@@ -63,7 +63,7 @@ class RecipeUpdater(BaseService):
         return recipe
 
     def _remove_nested_objects(self):
-        self.recipe.ingredients.all().delete()
+        self.recipe.recipeingredients.all().delete()
         self.recipe.tags.remove()
 
     def update(self):

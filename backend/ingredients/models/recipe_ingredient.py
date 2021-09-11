@@ -7,12 +7,10 @@ from django.utils.translation import gettext_lazy as _
 class RecipeIngredient(DefaultModel):
     ingredient = models.ForeignKey(
         'ingredients.Ingredient',
-        related_name='ingredients',
         on_delete=models.CASCADE,
     )
     recipe = models.ForeignKey(
         'recipes.Recipe',
-        related_name='ingredients',
         on_delete=models.CASCADE,
     )
     amount = models.DecimalField(
@@ -28,6 +26,7 @@ class RecipeIngredient(DefaultModel):
     class Meta:
         verbose_name = _('recipe ingredient')
         verbose_name_plural = _('recipe ingredients')
+        default_related_name = 'recipeingredients'
         constraints = (
             models.CheckConstraint(name='amount_gt_0', check=models.Q(amount__gt=0)),
             models.CheckConstraint(name='amount_lt_5000', check=models.Q(amount__lt=5000)),
