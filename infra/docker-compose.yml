@@ -22,6 +22,11 @@ services:
     depends_on:
       - db
     volumes:
+      - ../backend/ingredients/migrations/:/code/ingredients/migrations/
+      - ../backend/recipes/migrations/:/code/recipes/migrations/
+      - ../backend/tags/migrations/:/code/tags/migrations/
+      - ../backend/users/migrations/:/code/users/migrations/
+
       - static_files:/code/static/
       - media_files:/code/media/
     env_file:
