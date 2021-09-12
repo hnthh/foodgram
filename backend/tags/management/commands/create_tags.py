@@ -6,9 +6,9 @@ from tags.models import Tag
 TagNamed = namedtuple('TagNamed', 'name color slug')
 
 TAGS = [
-    TagNamed('Завтрак', '#FFB500', 'breakfast'),
-    TagNamed('Обед', '#F93800', 'lunch'),
-    TagNamed('Ужин', '#283350', 'dinner'),
+    TagNamed('Завтрак', '#4f738e', 'breakfast'),
+    TagNamed('Обед', '#c87f89', 'lunch'),
+    TagNamed('Ужин', '#a484ac', 'dinner'),
 ]
 
 

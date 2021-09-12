@@ -12,6 +12,7 @@ djoser
 
 Pillow
 reportlab
+matplotlib
 
 gunicorn
 psycopg2-binary

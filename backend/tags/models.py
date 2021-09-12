@@ -1,14 +1,14 @@
+import matplotlib._color_data as mcd
 from config.models import DefaultModel, models
 from django.core.validators import RegexValidator
-from django.utils.translation import gettext_lazy as _
 
 HEX_RE = '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
 
 
 class Tag(DefaultModel):
-    name = models.CharField(_('tag name'), unique=True, max_length=20)
+    name = models.CharField('название', unique=True, max_length=20)
     color = models.CharField(
-        _('tag color'),
+        'цвет',
         unique=True,
         max_length=7,
         validators=[
@@ -18,11 +18,11 @@ class Tag(DefaultModel):
             ),
         ],
     )
-    slug = models.SlugField(_('slug'), unique=True)
+    slug = models.SlugField(unique=True)
 
     class Meta:
-        verbose_name = _('tag')
-        verbose_name_plural = _('tags')
+        verbose_name = 'тэг'
+        verbose_name_plural = 'тэги'
         default_related_name = 'tags'
         constraints = (
             models.CheckConstraint(
@@ -30,3 +30,10 @@ class Tag(DefaultModel):
                 check=models.Q(color__regex=HEX_RE),
             ),
         )
+
+    @property
+    def color_name(self):
+        for name, hex in mcd.XKCD_COLORS.items():
+            if self.color.lower() == hex:
+                return name.split(':')[1]
+        return '—'
