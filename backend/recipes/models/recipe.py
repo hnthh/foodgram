@@ -1,6 +1,6 @@
 from config.models import DefaultQuerySet, TimestampedModel, models
-from django.db.models import Exists, OuterRef, Q, Value
-from django.utils.translation import gettext_lazy as _
+from django.db.models import Count, Exists, OuterRef, Q, Value
+from recipes.models import Favorite
 
 
 class RecipeQuerySet(DefaultQuerySet):
@@ -20,7 +20,7 @@ class RecipeQuerySet(DefaultQuerySet):
         )
 
     def for_viewset(self, user):
-        from recipes.models import Favorite, ShoppingCart
+        from recipes.models import ShoppingCart
 
         if not user.is_authenticated:
             return self.for_anon()
@@ -38,6 +38,9 @@ class RecipeQuerySet(DefaultQuerySet):
 
         return qs.filter(self.Q.author(user))
 
+    def for_admin_page(self):
+        return self.annotate(count_favorites=Count('favourites__recipe'))
+
     def create_with_ingredients_and_tags(self, **data):
         from recipes.services import RecipeCreator
         return RecipeCreator(**data)()
@@ -46,21 +49,22 @@ class RecipeQuerySet(DefaultQuerySet):
 class Recipe(TimestampedModel):
     objects = RecipeQuerySet.as_manager()
 
-    author = models.ForeignKey('users.User', on_delete=models.CASCADE)
-    name = models.CharField(_('recipe name'), max_length=256)
-    text = models.TextField(_('recipe description'))
-    image = models.ImageField(_('image'), upload_to='recipes/images/')
-    cooking_time = models.PositiveSmallIntegerField(_('cooking time'))
+    author = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='автор')
+    name = models.CharField('название', max_length=256)
+    text = models.TextField('описание рецепта')
+    image = models.ImageField('изображение', upload_to='recipes/images/')
+    cooking_time = models.PositiveSmallIntegerField('время приготовления')
     ingredients = models.ManyToManyField(
         'ingredients.Ingredient',
         through='recipes.RecipeIngredient',
         blank=True,
+        verbose_name='ингредиенты',
     )
-    tags = models.ManyToManyField('tags.Tag', blank=True)
+    tags = models.ManyToManyField('tags.Tag', blank=True, verbose_name='тэги')
 
     class Meta:
-        verbose_name = _('recipe')
-        verbose_name_plural = _('recipes')
+        verbose_name = 'рецепт'
+        verbose_name_plural = 'рецепты'
         default_related_name = 'recipes'
         constraints = (
             models.UniqueConstraint(fields=('author', 'name'), name='unique_author_recipename'),

@@ -1,14 +1,13 @@
 from config.models import DefaultModel, models
-from django.utils.translation import gettext_lazy as _
 
 
 class Favorite(DefaultModel):
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
-    recipe = models.ForeignKey('recipes.Recipe', on_delete=models.CASCADE)
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='пользователь')
+    recipe = models.ForeignKey('recipes.Recipe', on_delete=models.CASCADE, verbose_name='рецепт')
 
     class Meta:
-        verbose_name = _('favourites')
-        verbose_name_plural = _('favourites')
+        verbose_name = 'избранное'
+        verbose_name_plural = 'избранное'
         default_related_name = 'favourites'
         constraints = (
             models.UniqueConstraint(

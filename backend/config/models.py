@@ -1,6 +1,8 @@
 from behaviors.behaviors import Timestamped
 from django.contrib.auth.models import UserManager as _UserManager
 from django.db import models
+from django.db.models import F
+from django.db.models.functions import Coalesce
 
 __all__ = [
     'models',
@@ -26,6 +28,9 @@ class DefaultQuerySet(models.QuerySet):
             return lambda *args: self.filter(getattr(self.Q, name)())
 
         raise AttributeError()
+
+    def with_last_update(self):
+        return self.annotate(last_update=Coalesce(F('modified'), F('created')))
 
 
 class DefaultManager(models.Manager):

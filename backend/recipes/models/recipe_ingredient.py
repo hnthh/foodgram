@@ -15,7 +15,7 @@ class RecipeIngredient(DefaultModel):
         verbose_name='рецепт',
     )
     amount = models.DecimalField(
-        'количество ингредиента',
+        'количество',
         decimal_places=1,
         max_digits=5,
         validators=[
@@ -25,8 +25,8 @@ class RecipeIngredient(DefaultModel):
     )
 
     class Meta:
-        verbose_name = 'ингредиент рецепта'
-        verbose_name_plural = 'ингредиенты в рецептах'
+        verbose_name = 'ингредиент'
+        verbose_name_plural = 'ингредиенты'
         default_related_name = 'recipeingredients'
         constraints = (
             models.CheckConstraint(name='amount_gt_0', check=models.Q(amount__gt=0)),
