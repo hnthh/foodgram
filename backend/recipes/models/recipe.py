@@ -53,7 +53,7 @@ class Recipe(TimestampedModel):
     cooking_time = models.PositiveSmallIntegerField(_('cooking time'))
     ingredients = models.ManyToManyField(
         'ingredients.Ingredient',
-        through='ingredients.RecipeIngredient',
+        through='recipes.RecipeIngredient',
         blank=True,
     )
     tags = models.ManyToManyField('tags.Tag', blank=True)

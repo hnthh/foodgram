@@ -2,7 +2,7 @@ import io
 
 from config.settings import SITE_ROOT
 from django.db.models import Sum
-from ingredients.models import RecipeIngredient
+from recipes.models import RecipeIngredient
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas

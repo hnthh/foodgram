@@ -1,5 +1,5 @@
 import pytest
-from ingredients.models import RecipeIngredient
+from recipes.models import RecipeIngredient
 from recipes.tests.share import create_recipes
 
 pytestmark = [pytest.mark.django_db]

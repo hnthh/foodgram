@@ -1,7 +1,7 @@
 from config.serializers import ModelSerializer, serializers
 from drf_extra_fields.fields import Base64ImageField
-from ingredients.models import Ingredient, RecipeIngredient
-from recipes.models import Favorite, Recipe, ShoppingCart
+from ingredients.models import Ingredient
+from recipes.models import Favorite, Recipe, RecipeIngredient, ShoppingCart
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from tags.api.serializers import TagSerializer

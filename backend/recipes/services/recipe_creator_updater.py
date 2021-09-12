@@ -15,7 +15,7 @@ class BaseService:
         recipe.tags.set(self.tags)
 
     def _set_recipe_ingredients(self, recipe):
-        from ingredients.models import RecipeIngredient
+        from recipes.models import RecipeIngredient
 
         ingredients = list()
         for item in self.ingredients:
