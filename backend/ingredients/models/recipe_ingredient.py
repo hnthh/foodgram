@@ -1,31 +1,32 @@
 from config.models import DefaultModel, models
 from config.validators import GteMinValueValidator
 from django.core.validators import MaxValueValidator
-from django.utils.translation import gettext_lazy as _
 
 
 class RecipeIngredient(DefaultModel):
     ingredient = models.ForeignKey(
         'ingredients.Ingredient',
         on_delete=models.CASCADE,
+        verbose_name='ингредиент',
     )
     recipe = models.ForeignKey(
         'recipes.Recipe',
         on_delete=models.CASCADE,
+        verbose_name='рецепт',
     )
     amount = models.DecimalField(
-        _('amount'),
+        'количество ингредиента',
         decimal_places=1,
         max_digits=5,
         validators=[
-            GteMinValueValidator(0),
-            MaxValueValidator(5000, _("That's too much, man!")),
+            GteMinValueValidator(0, 'Введите число больше нуля или удалите ингредиент.'),
+            MaxValueValidator(5000, 'Это ну оооочень много!'),
         ],
     )
 
     class Meta:
-        verbose_name = _('recipe ingredient')
-        verbose_name_plural = _('recipe ingredients')
+        verbose_name = 'ингредиент рецепта'
+        verbose_name_plural = 'ингредиенты в рецептах'
         default_related_name = 'recipeingredients'
         constraints = (
             models.CheckConstraint(name='amount_gt_0', check=models.Q(amount__gt=0)),
