@@ -15,6 +15,6 @@ class TagAdmin(admin.ModelAdmin):
     def color_hex(self, tag):
         return tag.color
 
-    @admin.display(description='Название цвета')
+    @admin.display(description='цвет')
     def color_name(self, tag):
         return tag.color_name

@@ -41,10 +41,10 @@ class RecipeAdmin(admin.ModelAdmin):
     def get_ordering(self, request):
         return ['-favourites']
 
-    @admin.display(description='Последнее обновление')
+    @admin.display(description='последнее обновление')
     def last_update(self, recipe):
         return recipe.last_update
 
-    @admin.display(description='Добавлений в избранное')
+    @admin.display(description='добавлений в избранное')
     def count_favorites(self, recipe):
         return recipe.count_favorites

@@ -37,16 +37,16 @@ def test_ok(as_anon, as_user, as_admin, admin, ingredients, tags):
     assert got['count'] == 2
 
     results = got['results']
-    assert another_user.email == results[0]['email']
-    assert admin.email == results[1]['email']
+    assert admin.email == results[0]['email']
+    assert another_user.email == results[1]['email']
 
     assert results[0]['is_subscribed']
     assert results[1]['is_subscribed']
 
-    assert len(results[0]['recipes']) == 0
-    assert len(results[1]['recipes']) == 2
+    assert len(results[0]['recipes']) == 2
+    assert len(results[1]['recipes']) == 0
 
-    assert tuple(results[1]['recipes'][0].keys()) == RECIPE_FIELDS
+    assert tuple(results[0]['recipes'][0].keys()) == RECIPE_FIELDS
 
 
 def test_recipes_limit_recipes_count(as_user, as_admin, admin, ingredients, tags):

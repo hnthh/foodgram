@@ -8,7 +8,7 @@ HEX_RE = '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
 class Tag(DefaultModel):
     name = models.CharField('название', unique=True, max_length=20)
     color = models.CharField(
-        'цвет',
+        'цвет (HEX)',
         unique=True,
         max_length=7,
         validators=[

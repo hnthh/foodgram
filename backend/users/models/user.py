@@ -1,7 +1,6 @@
 from config.models import DefaultUserQuerySet, models
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Count, Exists, OuterRef, Q, Value
-from django.utils.translation import gettext_lazy as _
 
 
 class UserQuerySet(DefaultUserQuerySet):
@@ -43,16 +42,19 @@ class UserQuerySet(DefaultUserQuerySet):
 class User(AbstractUser):
     objects = UserQuerySet.as_manager()
 
-    email = models.EmailField(_('email'), unique=True)
-    first_name = models.CharField(_('first name'), max_length=150)
-    last_name = models.CharField(_('last name'), max_length=150)
+    username_validator = AbstractUser.username_validator
+
+    username = models.CharField('логин', unique=True, max_length=150, validators=[username_validator])
+    email = models.EmailField('почта', unique=True, max_length=150)
+    first_name = models.CharField('имя', max_length=150)
+    last_name = models.CharField('фамилия', max_length=150)
 
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 
     class Meta:
+        verbose_name = 'пользователь'
+        verbose_name_plural = 'пользователи'
         swappable = 'AUTH_USER_MODEL'
-        verbose_name = _('user')
-        verbose_name_plural = _('users')
         constraints = (
             models.UniqueConstraint(
                 fields=('email', 'username'),
@@ -61,12 +63,7 @@ class User(AbstractUser):
         )
 
     def __str__(self):
-        name = f'{self.first_name} {self.last_name}'
-
-        if len(name) < 3:
-            return _('Anonymous')
-
-        return name.strip()
+        return f'{self.first_name} {self.last_name}'
 
     def subscribe(self, to):
         from users.services import Subscriber
