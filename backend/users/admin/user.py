@@ -13,6 +13,7 @@ class UserAdmin(BaseUserAdmin):
         ('Права', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Важные даты', {'fields': ('last_login', 'date_joined')}),
     )
+    empty_value_display = '—'
 
     @admin.display(description='полное имя')
     def get_full_name(self, user):

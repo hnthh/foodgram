@@ -1,4 +1,4 @@
-from django.contrib import admin
+from config.admin import AppAdmin, admin
 from django.db import models
 from django.forms import CheckboxSelectMultiple
 from recipes.models import Recipe, RecipeIngredient
@@ -7,10 +7,11 @@ from recipes.models import Recipe, RecipeIngredient
 class RecipeIngredientInline(admin.StackedInline):
     model = RecipeIngredient
     extra = 1
+    min_num = 1
 
 
 @admin.register(Recipe)
-class RecipeAdmin(admin.ModelAdmin):
+class RecipeAdmin(AppAdmin):
     inlines = (
         RecipeIngredientInline,
     )

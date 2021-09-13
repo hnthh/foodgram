@@ -1,9 +1,9 @@
-from django.contrib import admin
+from config.admin import AppAdmin, admin
 from recipes.models import ShoppingCart
 
 
 @admin.register(ShoppingCart)
-class ShoppingCartAdmin(admin.ModelAdmin):
+class ShoppingCartAdmin(AppAdmin):
     list_display = ('__str__', 'added_to_purchases')
     fields = ('user', 'recipe')
     readonly_fields = ('user', 'recipe')

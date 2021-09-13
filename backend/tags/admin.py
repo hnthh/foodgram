@@ -1,9 +1,9 @@
-from django.contrib import admin
+from config.admin import AppAdmin, admin
 from tags.models import Tag
 
 
 @admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
+class TagAdmin(AppAdmin):
     list_display = (
         'name',
         'slug',

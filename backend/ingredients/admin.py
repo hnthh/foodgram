@@ -1,7 +1,7 @@
-from django.contrib import admin
+from config.admin import AppAdmin, admin
 from ingredients.models import Ingredient
 
 
 @admin.register(Ingredient)
-class IngredientAdmin(admin.ModelAdmin):
+class IngredientAdmin(AppAdmin):
     list_display = ('name', 'measurement_unit')

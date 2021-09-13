@@ -1,9 +1,9 @@
-from django.contrib import admin
+from config.admin import AppAdmin, admin
 from recipes.models import Favorite
 
 
 @admin.register(Favorite)
-class FavoriteAdmin(admin.ModelAdmin):
+class FavoriteAdmin(AppAdmin):
     list_display = ('__str__', 'added_to_favourites')
     fields = ('user', 'recipe')
     readonly_fields = ('user', 'recipe')
