@@ -3,6 +3,7 @@ django-behaviors
 django-cors-headers
 django-environ
 django-split-settings
+django-markdownx
 
 djangorestframework
 drf-extra-fields

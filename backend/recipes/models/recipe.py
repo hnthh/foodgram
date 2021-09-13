@@ -1,5 +1,6 @@
 from config.models import DefaultQuerySet, TimestampedModel, models
 from django.db.models import Count, Exists, OuterRef, Q, Value
+from markdownx.models import MarkdownxField
 from recipes.models import Favorite
 
 
@@ -51,7 +52,6 @@ class Recipe(TimestampedModel):
 
     author = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='автор')
     name = models.CharField('название', max_length=256)
-    text = models.TextField('описание рецепта')
     image = models.ImageField('изображение', upload_to='recipes/images/')
     cooking_time = models.PositiveSmallIntegerField('время приготовления')
     ingredients = models.ManyToManyField(
@@ -61,6 +61,8 @@ class Recipe(TimestampedModel):
         verbose_name='ингредиенты',
     )
     tags = models.ManyToManyField('tags.Tag', blank=True, verbose_name='тэги')
+
+    text = MarkdownxField(verbose_name='описание рецепта')
 
     class Meta:
         verbose_name = 'рецепт'
