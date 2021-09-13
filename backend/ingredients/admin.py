@@ -4,4 +4,4 @@ from ingredients.models import Ingredient
 
 @admin.register(Ingredient)
 class IngredientAdmin(AppAdmin):
-    list_display = ('name', 'measurement_unit')
+    pass
