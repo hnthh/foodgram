@@ -1,5 +1,4 @@
 import django_filters as filters
-from recipes.decorators import recipe_filter_bool_param
 from recipes.models import Recipe
 from tags.models import Tag
 
@@ -11,9 +10,7 @@ class RecipeFilter(filters.FilterSet):
         to_field_name='slug',
     )
     is_favorited = filters.BooleanFilter(method='filter_is_favorited')
-    is_in_shopping_cart = filters.BooleanFilter(
-        method='filter_is_in_shopping_cart',
-    )
+    is_in_shopping_cart = filters.BooleanFilter(method='filter_is_in_shopping_cart')
 
     class Meta:
         model = Recipe
@@ -24,14 +21,8 @@ class RecipeFilter(filters.FilterSet):
             'is_in_shopping_cart',
         )
 
-    @recipe_filter_bool_param
     def filter_is_favorited(self, queryset, name, value):
-        return queryset.filter(
-            favourites__user=self.request.user,
-        )
+        return queryset.favourites(self.request.user)
 
-    @recipe_filter_bool_param
     def filter_is_in_shopping_cart(self, queryset, name, value):
-        return queryset.filter(
-            purchases__user=self.request.user,
-        )
+        return queryset.purchases(self.request.user)

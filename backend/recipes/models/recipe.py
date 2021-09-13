@@ -10,6 +10,26 @@ class RecipeQuerySet(DefaultQuerySet):
         def author(user):
             return Q(author=user)
 
+        @classmethod
+        def favourites(cls, user):
+            return Q(favourites__user=user)
+
+        @classmethod
+        def purchases(cls, user):
+            return Q(purchases__user=user)
+
+    def favourites(self, user):
+        if not user.is_authenticated:
+            return self.for_anon()
+
+        return self.filter(self.Q.favourites(user))
+
+    def purchases(self, user):
+        if not user.is_authenticated:
+            return self.for_anon()
+
+        return self.filter(self.Q.purchases(user))
+
     def for_detail(self, pk, user):
         return self.for_viewset(user).get(id=pk)
 
@@ -31,12 +51,10 @@ class RecipeQuerySet(DefaultQuerySet):
         )
 
     def for_author(self, user):
-        qs = self.for_viewset(user)
-
         if not user.is_authenticated:
             return self.for_anon()
 
-        return qs.filter(self.Q.author(user))
+        return self.for_viewset(user).filter(self.Q.author(user))
 
     def for_admin_page(self):
         return self.annotate(count_favorites=Count('favourites__recipe'))
