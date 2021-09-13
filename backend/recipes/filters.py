@@ -21,8 +21,8 @@ class RecipeFilter(filters.FilterSet):
             'is_in_shopping_cart',
         )
 
-    def filter_is_favorited(self, queryset, name, value):
+    def filter_is_favorited(self, queryset, *args):
         return queryset.favourites(self.request.user)
 
-    def filter_is_in_shopping_cart(self, queryset, name, value):
+    def filter_is_in_shopping_cart(self, queryset, *args):
         return queryset.purchases(self.request.user)

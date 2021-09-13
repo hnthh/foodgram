@@ -64,7 +64,7 @@ class RecipeViewSet(AppViewSet):
 
         serializer = self.get_serializer_class()(
             data=data,
-            context={'request': request},
+            context=self.get_serializer_context(),
         )
         serializer.is_valid(raise_exception=True)
 

@@ -73,7 +73,7 @@ class FavoriteBaseSerializer(ModelSerializer):
     id = serializers.ReadOnlyField(source='recipe.id')
     name = serializers.ReadOnlyField(source='recipe.name')
     cooking_time = serializers.ReadOnlyField(source='recipe.cooking_time')
-    image = serializers.SerializerMethodField()
+    image = Base64ImageField(source='recipe.image', read_only=True)
 
     class Meta:
         model = Favorite
@@ -85,12 +85,6 @@ class FavoriteBaseSerializer(ModelSerializer):
                 message='FavoriteObject already exists',
             ),
         ]
-
-    def get_image(self, ordered):
-        _, recipe = ordered.values()
-        request = self.context.get('request')
-        image_url = recipe.image.url
-        return request.build_absolute_uri(image_url)
 
 
 class FavoriteSerializer(FavoriteBaseSerializer):
