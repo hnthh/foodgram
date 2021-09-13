@@ -1,7 +1,7 @@
-from config.models import DefaultModel, models
+from config.models import TimestampedModel, models
 
 
-class Favorite(DefaultModel):
+class Favorite(TimestampedModel):
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='пользователь')
     recipe = models.ForeignKey('recipes.Recipe', on_delete=models.CASCADE, verbose_name='рецепт')
 

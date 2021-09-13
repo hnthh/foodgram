@@ -77,7 +77,7 @@ class FavoriteBaseSerializer(ModelSerializer):
 
     class Meta:
         model = Favorite
-        fields = '__all__'
+        exclude = ('created', 'modified')
         validators = [
             UniqueTogetherValidator(
                 queryset=Favorite.objects.all(),
