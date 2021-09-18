@@ -1,3 +1,5 @@
+import re
+
 from recipes.models import Recipe
 
 
@@ -11,10 +13,7 @@ class BaseService:
         self.ingredients = ingredients
         self.tags = tags
 
-    def _set_tags(self, recipe):
-        recipe.tags.set(self.tags)
-
-    def _set_recipe_ingredients(self, recipe):
+    def set_recipe_ingredients(self, recipe):
         from recipes.models import RecipeIngredient
 
         ingredients = list()
@@ -31,8 +30,8 @@ class RecipeCreator(BaseService):
     def __call__(self):
         recipe = self.create()
 
-        self._set_recipe_ingredients(recipe)
-        self._set_tags(recipe)
+        self.set_recipe_ingredients(recipe)
+        recipe.tags.set(self.tags)
 
         return recipe
 
@@ -47,31 +46,42 @@ class RecipeCreator(BaseService):
 
 
 class RecipeUpdater(BaseService):
-    def __init__(self, recipe, author, name, text, image, cooking_time, ingredients, tags):
-        super().__init__(author, name, text, image, cooking_time, ingredients, tags)
+    def __init__(self, recipe, name=None, text=None, image=None, cooking_time=None, ingredients=None, tags=None):
+        self.name = name
+        self.text = text
+        self.image = image
+        self.cooking_time = cooking_time
+        self.ingredients = ingredients
+        self.tags = tags
 
         self.recipe = recipe
+        self.nested = ('ingredients', 'tags')
 
     def __call__(self):
-        self._remove_nested_objects()
-
         recipe = self.update()
-
-        self._set_recipe_ingredients(recipe)
-        self._set_tags(recipe)
+        recipe.save()
 
         return recipe
 
-    def _remove_nested_objects(self):
-        self.recipe.recipeingredients.all().delete()
-        self.recipe.tags.remove()
-
     def update(self):
-        pk = Recipe.objects.filter(id=self.recipe.id).update(
-            author=self.author,
-            name=self.name,
-            text=self.text,
-            image=self.image,
-            cooking_time=self.cooking_time,
-        )
-        return Recipe.objects.get(id=pk)
+        update = [
+            attrib for attrib in dir(self)
+            if re.match('^[a-zA-Z]+.*', attrib)
+            and attrib not in ('recipe', 'nested', 'update')
+            and getattr(self, attrib) is not None
+        ]
+
+        if 'tags' in update:
+            self.recipe.tags.remove()
+            self.recipe.tags.set(self.tags)
+
+        if 'ingredients' in update:
+            self.recipe.recipeingredients.all().delete()
+            self.set_recipe_ingredients(self.recipe)
+
+        for attr in update:
+            if attr not in self.nested:
+                value = getattr(self, attr)
+                setattr(self.recipe, attr, value)
+
+        return self.recipe

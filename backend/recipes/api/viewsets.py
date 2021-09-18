@@ -20,8 +20,9 @@ class RecipeViewSet(AppViewSet):
     filterset_class = RecipeFilter
     serializer_class = serializers.RecipeSerializer
     serializer_action_classes = {
-        'create': serializers.RecipeCreateUpdateSerializer,
-        'update': serializers.RecipeCreateUpdateSerializer,
+        'create': serializers.RecipeCreateSerializer,
+        'update': serializers.RecipeUpdateSerializer,
+        'partial_update': serializers.RecipeUpdateSerializer,
         'favorite': serializers.FavoriteSerializer,
         'shopping_cart': serializers.ShoppingCartSerializer,
     }

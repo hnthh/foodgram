@@ -28,6 +28,7 @@ class RecipeSerializer(ModelSerializer):
     is_in_shopping_cart = serializers.BooleanField(read_only=True)
     tags = TagSerializer(many=True)
     author = UserSerializer(read_only=True)
+    image = Base64ImageField(read_only=True)
 
     class Meta:
         model = Recipe
@@ -42,7 +43,7 @@ class RecipeSubscriptionSerializer(RecipeSerializer):
         fields = ('id', 'name', 'image', 'cooking_time')
 
 
-class RecipeCreateUpdateSerializer(ModelSerializer):
+class RecipeCreateSerializer(ModelSerializer):
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
     ingredients = RecipeIngredientSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
@@ -61,6 +62,28 @@ class RecipeCreateUpdateSerializer(ModelSerializer):
 
     def create(self, data):
         return Recipe.objects.create_with_ingredients_and_tags(**data)
+
+
+class RecipeUpdateSerializer(ModelSerializer):
+    ingredients = RecipeIngredientSerializer(many=True, required=False)
+    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True, required=False)
+    image = Base64ImageField(required=False)
+
+    class Meta:
+        model = Recipe
+        fields = ('name', 'text', 'image', 'cooking_time', 'ingredients', 'tags')
+        extra_kwargs = {
+            'name': {'required': False},
+            'text': {'required': False},
+            'cooking_time': {'required': False},
+        }
+
+    def to_representation(self, recipe):
+        request = self.context['request']
+
+        qs = self.Meta.model.objects.for_detail(recipe.pk, request.user)
+
+        return RecipeSerializer(qs, context=self.context).data
 
     def update(self, recipe, data):
         return recipe.update(**data)
