@@ -4,8 +4,7 @@ from recipes.models import Recipe
 
 
 class BaseService:
-    def __init__(self, author, name, text, image, cooking_time, ingredients, tags):
-        self.author = author
+    def __init__(self, name, text, image, cooking_time, ingredients, tags):
         self.name = name
         self.text = text
         self.image = image
@@ -27,6 +26,11 @@ class BaseService:
 
 
 class RecipeCreator(BaseService):
+    def __init__(self, author, name, text, image, cooking_time, ingredients, tags):
+        super().__init__(name, text, image, cooking_time, ingredients, tags)
+
+        self.author = author
+
     def __call__(self):
         recipe = self.create()
 
@@ -47,12 +51,7 @@ class RecipeCreator(BaseService):
 
 class RecipeUpdater(BaseService):
     def __init__(self, recipe, name=None, text=None, image=None, cooking_time=None, ingredients=None, tags=None):
-        self.name = name
-        self.text = text
-        self.image = image
-        self.cooking_time = cooking_time
-        self.ingredients = ingredients
-        self.tags = tags
+        super().__init__(name, text, image, cooking_time, ingredients, tags)
 
         self.recipe = recipe
         self.nested = ('ingredients', 'tags')
