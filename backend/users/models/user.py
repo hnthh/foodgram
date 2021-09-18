@@ -1,6 +1,16 @@
 from config.models import DefaultUserQuerySet, models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.validators import (
+    UnicodeUsernameValidator as _UnicodeUsernameValidator,
+)
 from django.db.models import Count, Exists, OuterRef, Q, Value
+
+
+class UnicodeUsernameValidator(_UnicodeUsernameValidator):
+    message = (
+        'Введите правильный логин. '
+        'Он может содержать только буквы, цифры и знаки @/./+/-/_.'
+    )
 
 
 class UserQuerySet(DefaultUserQuerySet):
@@ -42,10 +52,21 @@ class UserQuerySet(DefaultUserQuerySet):
 class User(AbstractUser):
     objects = UserQuerySet.as_manager()
 
-    username_validator = AbstractUser.username_validator
+    username_validator = UnicodeUsernameValidator()
 
-    username = models.CharField('логин', unique=True, max_length=150, validators=[username_validator])
-    email = models.EmailField('почта', unique=True, max_length=150)
+    username = models.CharField(
+        'логин',
+        unique=True,
+        max_length=150,
+        validators=[username_validator],
+        error_messages={'unique': 'Пользователь с таким логином уже зарегистрирован на платформе.'},
+    )
+    email = models.EmailField(
+        'почта',
+        unique=True,
+        max_length=150,
+        error_messages={'unique': 'Пользователь с такой почтой уже зарегистрирован на платформе.'},
+    )
     first_name = models.CharField('имя', max_length=150)
     last_name = models.CharField('фамилия', max_length=150)
 

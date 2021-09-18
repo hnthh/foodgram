@@ -36,27 +36,21 @@ def test_ok(as_anon, django_user_model):
 
 def test_invalid_payload(as_anon, user):
     as_anon.post(URL, {}, expected_status=400)
+
     as_anon.post(
         URL,
-        {
-            'email': 'testuser@test.com',
-            'username': 'TestUser',
-            'password': 'wert1234gsa$',
-        },
+        {'email': 'testuser@test.com', 'username': 'TestUser', 'password': 'wert1234gsa$'},
         expected_status=400,
     )
-    as_anon.post(
+
+    got = as_anon.post(
         URL,
-        {
-            'email': user.email,
-            'username': 'TestUser',
-            'first_name': 'Test',
-            'last_name': 'User',
-            'password': 'wert1234gsa$',
-        },
+        {'email': user.email, 'username': 'TestUser', 'first_name': 'Test', 'last_name': 'User', 'password': 'wert1234gsa$'},
         expected_status=400,
     )
-    as_anon.post(
+    assert got['email'][0] == 'Пользователь с такой почтой уже зарегистрирован на платформе.'
+
+    got = as_anon.post(
         URL,
         {
             'email': 'testuser@test.com',
@@ -66,4 +60,21 @@ def test_invalid_payload(as_anon, user):
             'password': 'wert1234gsa$',
         },
         expected_status=400,
+    )
+    assert got['username'][0] == 'Пользователь с таким логином уже зарегистрирован на платформе.'
+
+    got = as_anon.post(
+        URL,
+        {
+            'email': 'testuser@test.com',
+            'username': '!',
+            'first_name': 'Test',
+            'last_name': 'User',
+            'password': 'wert1234gsa$',
+        },
+        expected_status=400,
+    )
+    assert got['username'][0] == (
+        'Введите правильный логин. '
+        'Он может содержать только буквы, цифры и знаки @/./+/-/_.'
     )
