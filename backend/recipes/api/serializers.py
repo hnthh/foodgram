@@ -71,7 +71,7 @@ class RecipeUpdateSerializer(ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('name', 'text', 'image', 'cooking_time', 'ingredients', 'tags')
+        exclude = ('author',)
         extra_kwargs = {
             'name': {'required': False},
             'text': {'required': False},

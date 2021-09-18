@@ -6,10 +6,6 @@ from recipes.models import Favorite
 class RecipeQuerySet(DefaultQuerySet):
 
     class Q:  # noqa: PIE798
-        @staticmethod
-        def author(user):
-            return Q(author=user)
-
         @classmethod
         def favourites(cls, user):
             return Q(favourites__user=user)
@@ -49,12 +45,6 @@ class RecipeQuerySet(DefaultQuerySet):
             is_favorited=Exists(Favorite.objects.filter(recipe=OuterRef('pk'), user=user)),
             is_in_shopping_cart=Exists(ShoppingCart.objects.filter(recipe=OuterRef('pk'), user=user)),
         )
-
-    def for_author(self, user):
-        if not user.is_authenticated:
-            return self.for_anon()
-
-        return self.for_viewset(user).filter(self.Q.author(user))
 
     def for_admin_page(self):
         return self.annotate(count_favorites=Count('favourites__recipe'))

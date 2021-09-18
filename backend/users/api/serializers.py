@@ -5,7 +5,6 @@ from djoser.serializers import (
     UserCreateSerializer as DjoserUserCreateSerializer,
 )
 from djoser.serializers import UserSerializer as DjoserUserSerializer
-from recipes.models import Recipe
 from rest_framework.validators import UniqueTogetherValidator
 from users.models import Subscribe
 
@@ -47,9 +46,9 @@ class SubscriptionSerializer(UserSerializer):
         limit = self.context['request'].query_params.get('recipes_limit')
 
         qs = (
-            Recipe.objects.for_author(author)[:int(limit)]
+            author.recipes.all()[:int(limit)]
             if limit is not None
-            else Recipe.objects.for_author(author)
+            else author.recipes.all()
         )
 
         return RecipeSubscriptionSerializer(qs, many=True).data
