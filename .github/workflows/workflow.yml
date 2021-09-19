@@ -26,7 +26,15 @@ jobs:
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           SQLITE_DATABASE_URL: ${{ secrets.SQLITE_DATABASE_URL }}
-        run: make test
+        run: make coverage
+
+      - uses: actions/checkout@v2
+      - uses: codecov/codecov-action@v2
+        with:
+          flags: pytest
+          name: codecov-umbrella
+          fail_ci_if_error: true
+          verbose: true
 
   push_to_docker_hub:
     name: Push Docker image to DockerHub
@@ -93,7 +101,6 @@ jobs:
             echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
             echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
 
-            echo SQLITE_DATABASE_URL=${{ secrets.SQLITE_DATABASE_URL }} >> .env
             echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
             echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
 
@@ -102,16 +109,3 @@ jobs:
             sudo docker-compose exec -T backend python manage.py makemigrations --noinput
             sudo docker-compose exec -T backend python manage.py migrate --noinput
             sudo docker-compose exec -T backend python manage.py collectstatic --noinput
-
-  send_message:
-    name: Notify on Telegram
-    runs-on: ubuntu-latest
-    needs: deploy
-
-    steps:
-      - name: Send message
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: «${{ github.workflow }}» do-ne!

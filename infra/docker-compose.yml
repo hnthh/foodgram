@@ -6,7 +6,6 @@ volumes:
   media_files:
 
 services:
-
   db:
     image: postgres:12.4
     container_name: foodgram_db
@@ -38,6 +37,7 @@ services:
   nginx:
     image: nginx:1.19.3
     container_name: foodgram_nginx
+    restart: unless-stopped
     ports:
       - 80:80
     volumes:
@@ -45,6 +45,7 @@ services:
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/redoc.html:/usr/share/nginx/html/api/docs/redoc.html
       - ../docs/openapi-schema.yml:/usr/share/nginx/html/api/docs/openapi-schema.yml
+
       - static_files:/static/
       - media_files:/media/
     depends_on:
