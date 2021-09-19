@@ -22,19 +22,19 @@ jobs:
       - name: Apply isort, flake8
         run: make lint
 
-      - name: Test with PyTest
-        env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          SQLITE_DATABASE_URL: ${{ secrets.SQLITE_DATABASE_URL }}
-        run: make coverage
+#      - name: Test with PyTest
+#        env:
+#          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+#          SQLITE_DATABASE_URL: ${{ secrets.SQLITE_DATABASE_URL }}
+#        run: make coverage
 
       - uses: actions/checkout@v2
       - uses: codecov/codecov-action@v2
-        with:
-          directory: /home/runner/work/foodgram-project-react/backend/
-          flags: pytest
-          name: codecov-umbrella
-          fail_ci_if_error: true
+#        with:
+#          directory: /home/runner/work/foodgram-project-react/backend/
+#          flags: pytest
+#          name: codecov-umbrella
+#          fail_ci_if_error: true
 
   push_to_docker_hub:
     name: Push Docker image to DockerHub
