@@ -31,7 +31,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: codecov/codecov-action@v2
         with:
-          directory: backend/
+#          directory: backend/
+          root_dir: backend/
           flags: pytest
           name: codecov-umbrella
           fail_ci_if_error: true
