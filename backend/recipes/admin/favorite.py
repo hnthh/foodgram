@@ -11,3 +11,8 @@ class FavoriteAdmin(AppAdmin):
     @admin.display(description='добавлено в избранное')
     def added_to_favourites(self, favorite):
         return favorite.created
+
+    def get_readonly_fields(self, request, favorite=None):
+        if favorite is not None:
+            return ('user', 'recipe')
+        return tuple()

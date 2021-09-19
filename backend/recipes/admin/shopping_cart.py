@@ -11,3 +11,8 @@ class ShoppingCartAdmin(AppAdmin):
     @admin.display(description='добавлено в корзину')
     def added_to_purchases(self, purchase):
         return purchase.created
+
+    def get_readonly_fields(self, request, purchase=None):
+        if purchase is not None:
+            return ('user', 'recipe')
+        return tuple()

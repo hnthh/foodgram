@@ -11,3 +11,8 @@ class SubscribeAdmin(AppAdmin):
     @admin.display(description='дата подписки')
     def subscribe_date(self, subscription):
         return subscription.created
+
+    def get_readonly_fields(self, request, subscribe=None):
+        if subscribe is not None:
+            return ('user', 'author')
+        return tuple()
