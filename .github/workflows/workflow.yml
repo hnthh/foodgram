@@ -30,6 +30,8 @@ jobs:
 
       - uses: actions/checkout@v2
       - uses: codecov/codecov-action@v2
+        with:
+          token: 8f812939-017a-48ae-8651-4a7cc480ab46
 #        with:
 #          directory: /home/runner/work/foodgram-project-react/backend/
 #          flags: pytest
