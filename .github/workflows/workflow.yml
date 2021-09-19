@@ -35,7 +35,6 @@ jobs:
           flags: pytest
           name: codecov-umbrella
           fail_ci_if_error: true
-          verbose: true
 
   push_to_docker_hub:
     name: Push Docker image to DockerHub
