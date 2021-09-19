@@ -94,7 +94,6 @@ jobs:
             sudo docker-compose rm -f backend
 
             sudo docker rmi hnthh/foodgram-backend:latest
-            sudo docker rmi infra_frontend:latest
 
             echo DEBUG=${{ secrets.DEBUG }} > .env
             echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env

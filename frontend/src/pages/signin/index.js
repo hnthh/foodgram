@@ -28,7 +28,7 @@ const SignIn = ({ onSignIn }) => {
       >
         <Input
           required
-          label='Почта'
+          label='Электронная почта'
           name='email'
           onChange={handleChange}
         />

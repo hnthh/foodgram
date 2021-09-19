@@ -36,14 +36,14 @@ const SignUp = ({ onSignUp }) => {
           onChange={handleChange}
         />
         <Input
-          label='Логин'
+          label='Имя пользователя'
           name='username'
           required
           onChange={handleChange}
         />
 
         <Input
-          label='Почта'
+          label='Адрес электронной почты'
           name='email'
           required
           onChange={handleChange}
