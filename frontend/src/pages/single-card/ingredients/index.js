@@ -3,7 +3,7 @@ import styles from './styles.module.css'
 const Ingredients = ({ ingredients }) => {
   if (!ingredients) { return null }
   return <div className={styles.ingredients}>
-    <h3 className={styles['ingredients__title']}>Ингридиенты:</h3>
+    <h3 className={styles['ingredients__title']}>Ингредиенты:</h3>
     <div className={styles['ingredients__list']}>
       {ingredients.map(({
         name,
@@ -13,7 +13,7 @@ const Ingredients = ({ ingredients }) => {
         key={`${name}${amount}${measurement_unit}`}
         className={styles['ingredients__list-item']}
       >
-        {name} - {amount} {measurement_unit}
+        {name} – {amount} {measurement_unit}
       </p>)}
     </div>
   </div>
