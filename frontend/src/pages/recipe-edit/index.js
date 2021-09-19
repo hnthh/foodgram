@@ -135,11 +135,11 @@ const RecipeEdit = ({ onEdit }) => {
             .catch(err => {
               const { non_field_errors } = err
               if (non_field_errors) {
-                alert(non_field_errors.join(', '))
+                alert(non_field_errors.join(' '))
               }
               const errors = Object.values(err)
               if (errors) {
-                alert(errors.join(', '))
+                alert(errors.join(' '))
               }
             })
         }}
@@ -209,7 +209,7 @@ const RecipeEdit = ({ onEdit }) => {
               return <div
                 className={styles.ingredientsAddedItem}
               >
-                <span className={styles.ingredientsAddedItemTitle}>{item.name}</span> <span>-</span> <span>{item.amount}{item.measurement_unit}</span> <span
+                <span className={styles.ingredientsAddedItemTitle}>{item.name}</span> <pre><span>— </span></pre> <pre><span>{item.amount} {item.measurement_unit}</span></pre> <span
                   className={styles.ingredientsAddedItemRemove}
                   onClick={_ => {
                     const recipeIngredientsUpdated = recipeIngredients.filter(ingredient => {

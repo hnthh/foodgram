@@ -92,7 +92,9 @@ jobs:
 
             sudo docker-compose stop backend
             sudo docker-compose rm -f backend
+
             sudo docker rmi hnthh/foodgram-backend:latest
+            sudo docker rmi infra_frontend:latest
 
             echo DEBUG=${{ secrets.DEBUG }} > .env
             echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
@@ -101,7 +103,7 @@ jobs:
             echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
             echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
 
-            sudo docker-compose up -d
+            sudo docker-compose up --detach
 
             sudo docker-compose exec -T backend python manage.py makemigrations --noinput
             sudo docker-compose exec -T backend python manage.py migrate --noinput
