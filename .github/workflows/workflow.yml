@@ -90,7 +90,7 @@ jobs:
           script: |
             cd foodgram/infra
 
-            sudo docker-compose stop backend
+            sudo docker-compose down
             sudo docker-compose rm -f backend
 
             sudo docker rmi hnthh/foodgram-backend:latest

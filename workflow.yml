@@ -26,7 +26,12 @@ jobs:
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           SQLITE_DATABASE_URL: ${{ secrets.SQLITE_DATABASE_URL }}
-        run: make test
+        run: make coverage
+
+      - name: Upload to Codecov
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: cd backend && bash <(curl -s https://codecov.io/bash)
 
   push_to_docker_hub:
     name: Push Docker image to DockerHub
@@ -70,7 +75,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          source: 'infra/docker-compose.yml, infra/nginx.conf'
+          source: 'infra/docker-compose.yml, infra/nginx.conf, frontend/'
           overwrite: true
           target: 'foodgram'
 
@@ -85,8 +90,9 @@ jobs:
           script: |
             cd foodgram/infra
 
-            sudo docker-compose stop backend
+            sudo docker-compose down
             sudo docker-compose rm -f backend
+
             sudo docker rmi hnthh/foodgram-backend:latest
 
             echo DEBUG=${{ secrets.DEBUG }} > .env
@@ -96,7 +102,7 @@ jobs:
             echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
             echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
 
-            sudo docker-compose up -d
+            sudo docker-compose up --detach
 
             sudo docker-compose exec -T backend python manage.py makemigrations --noinput
             sudo docker-compose exec -T backend python manage.py migrate --noinput
