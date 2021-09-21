@@ -3,7 +3,7 @@
 Anya Agarenko's [Yandex Practicum](https://practicum.yandex.com) graduation project as a python developer.
 
 [![codecov](https://codecov.io/gh/hnthh/foodgram-project-react/branch/main/graph/badge.svg?token=VH4S1CCXHK)](https://codecov.io/gh/hnthh/foodgram-project-react)
-![workflow](https://github.com/hnthh/foodgram-project-react/actions/workflows/workflow.yml/badge.svg)
+[![Foodgram-app workflow](https://github.com/hnthh/foodgram-project-react/actions/workflows/workflow.yml/badge.svg)](https://github.com/hnthh/foodgram-project-react/actions/workflows/workflow.yml)
 
 > **Foodgram** is an app where users **can**:
 > 1) Share their recipes.
