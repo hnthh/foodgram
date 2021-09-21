@@ -2,8 +2,16 @@ from config.models import TimestampedModel, models
 
 
 class Favorite(TimestampedModel):
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='пользователь')
-    recipe = models.ForeignKey('recipes.Recipe', on_delete=models.CASCADE, verbose_name='рецепт')
+    user = models.ForeignKey(
+        'users.User',
+        on_delete=models.CASCADE,
+        verbose_name='пользователь',
+    )
+    recipe = models.ForeignKey(
+        'recipes.Recipe',
+        on_delete=models.CASCADE,
+        verbose_name='рецепт',
+    )
 
     class Meta:
         verbose_name = 'избранное'

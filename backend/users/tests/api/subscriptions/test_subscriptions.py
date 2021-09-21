@@ -26,7 +26,10 @@ def test_ok(as_anon, as_user, as_admin, admin, ingredients, tags):
     another_user = create_user_api(as_anon)
     create_recipes(as_admin, ingredients, tags)
 
-    as_user.get(f'/api/users/{another_user.id}/subscribe/', expected_status=201)
+    as_user.get(
+        f'/api/users/{another_user.id}/subscribe/',
+        expected_status=201,
+    )
     as_user.get(f'/api/users/{admin.id}/subscribe/', expected_status=201)
 
     got = as_user.get(URL)
@@ -49,7 +52,13 @@ def test_ok(as_anon, as_user, as_admin, admin, ingredients, tags):
     assert tuple(results[0]['recipes'][0].keys()) == RECIPE_FIELDS
 
 
-def test_recipes_limit_recipes_count(as_user, as_admin, admin, ingredients, tags):
+def test_recipes_limit_recipes_count(
+    as_user,
+    as_admin,
+    admin,
+    ingredients,
+    tags,
+):
     create_recipes(as_admin, ingredients, tags)
     as_user.get(f'/api/users/{admin.id}/subscribe/', expected_status=201)
 

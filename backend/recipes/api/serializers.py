@@ -15,7 +15,9 @@ class RecipeIngredientSerializer(ModelSerializer):
         queryset=Ingredient.objects.all(),
     )
     name = serializers.ReadOnlyField(source='ingredient.name')
-    measurement_unit = serializers.ReadOnlyField(source='ingredient.measurement_unit')
+    measurement_unit = serializers.ReadOnlyField(
+        source='ingredient.measurement_unit',
+    )
 
     class Meta:
         model = RecipeIngredient
@@ -23,7 +25,10 @@ class RecipeIngredientSerializer(ModelSerializer):
 
 
 class RecipeSerializer(ModelSerializer):
-    ingredients = RecipeIngredientSerializer(many=True, source='recipeingredients')
+    ingredients = RecipeIngredientSerializer(
+        many=True,
+        source='recipeingredients',
+    )
     is_favorited = serializers.BooleanField(read_only=True)
     is_in_shopping_cart = serializers.BooleanField(read_only=True)
     tags = TagSerializer(many=True)
@@ -46,7 +51,10 @@ class RecipeSubscriptionSerializer(RecipeSerializer):
 class RecipeCreateSerializer(ModelSerializer):
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
     ingredients = RecipeIngredientSerializer(many=True)
-    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        many=True,
+    )
     image = Base64ImageField()
 
     class Meta:
@@ -66,7 +74,11 @@ class RecipeCreateSerializer(ModelSerializer):
 
 class RecipeUpdateSerializer(ModelSerializer):
     ingredients = RecipeIngredientSerializer(many=True, required=False)
-    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True, required=False)
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        many=True,
+        required=False,
+    )
     image = Base64ImageField(required=False)
 
     class Meta:
@@ -90,8 +102,14 @@ class RecipeUpdateSerializer(ModelSerializer):
 
 
 class FavoriteBaseSerializer(ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault(), write_only=True)
-    recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all(), write_only=True)
+    user = serializers.HiddenField(
+        default=serializers.CurrentUserDefault(),
+        write_only=True,
+    )
+    recipe = serializers.PrimaryKeyRelatedField(
+        queryset=Recipe.objects.all(),
+        write_only=True,
+    )
 
     id = serializers.ReadOnlyField(source='recipe.id')
     name = serializers.ReadOnlyField(source='recipe.name')

@@ -22,7 +22,9 @@ class Command(BaseCommand):
                 *parts, unit = row
 
                 name = ','.join(parts)  # handle: 'вишня, протертая с сахаром'
-                name = re.sub(r'(?<=\d),(?=\d)', '.', name)  # handle: 'молоко 3.6%'
+                name = re.sub(
+                    r'(?<=\d),(?=\d)', '.', name,
+                )  # handle: 'молоко 3.6%'
 
                 ingredient = Ingredient(name=name, measurement_unit=unit)
                 ingredients.append(ingredient)

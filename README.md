@@ -7,7 +7,7 @@ Anya Agarenko's [Yandex Practicum](https://practicum.yandex.com) graduation proj
 
 > **Foodgram** is an app where users **can**:
 > 1) Share their recipes.
-> 2) Add recipes to purchases to get a complete list of what you need to buy to prepare dishes, ready for download, [see an example](https://github.com/hnthh/foodgram-project-react/blob/main/shopping-list-example.png).
+> 2) Add recipes to purchases to get a complete list of what they need to buy to prepare dishes, ready for download, [see an example](https://github.com/hnthh/foodgram-project-react/blob/main/shopping-list-example.png).
 
 ## Configuration
 

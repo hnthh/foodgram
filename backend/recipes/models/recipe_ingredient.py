@@ -19,7 +19,10 @@ class RecipeIngredient(DefaultModel):
         decimal_places=1,
         max_digits=5,
         validators=[
-            GteMinValueValidator(0, 'Введите число больше нуля или удалите ингредиент.'),
+            GteMinValueValidator(
+                0,
+                'Введите число больше нуля или удалите ингредиент.',
+            ),
             MaxValueValidator(5000, 'Это ну оооочень много!'),
         ],
     )
@@ -29,9 +32,18 @@ class RecipeIngredient(DefaultModel):
         verbose_name_plural = 'ингредиенты'
         default_related_name = 'recipeingredients'
         constraints = (
-            models.CheckConstraint(name='amount_gt_0', check=models.Q(amount__gt=0)),
-            models.CheckConstraint(name='amount_lt_5000', check=models.Q(amount__lt=5000)),
-            models.UniqueConstraint(fields=('recipe', 'ingredient'), name='unique_recipe_ingredient'),
+            models.CheckConstraint(
+                name='amount_gt_0',
+                check=models.Q(amount__gt=0),
+            ),
+            models.CheckConstraint(
+                name='amount_lt_5000',
+                check=models.Q(amount__lt=5000),
+            ),
+            models.UniqueConstraint(
+                fields=('recipe', 'ingredient'),
+                name='unique_recipe_ingredient',
+            ),
         )
 
     def __str__(self):

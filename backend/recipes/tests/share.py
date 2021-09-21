@@ -12,7 +12,9 @@ def create_recipes(client, ingredients, tags):
             'cooking_time': cooking_time,
             'ingredients': ingredients,
             'tags': tags,
-            'image': 'R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
+            'image': (
+                'R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+            ),
         }
         client.post('/api/recipes/', data=data, format='json')
         return Recipe.objects.latest('pk')

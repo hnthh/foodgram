@@ -19,14 +19,27 @@ class BaseService:
         for item in self.ingredients:
             ingredient, amount = item.values()
             ingredients.append(
-                RecipeIngredient(recipe=recipe, ingredient=ingredient, amount=amount),
+                RecipeIngredient(
+                    recipe=recipe,
+                    ingredient=ingredient,
+                    amount=amount,
+                ),
             )
 
         RecipeIngredient.objects.bulk_create(ingredients)
 
 
 class RecipeCreator(BaseService):
-    def __init__(self, author, name, text, image, cooking_time, ingredients, tags):
+    def __init__(
+        self,
+        author,
+        name,
+        text,
+        image,
+        cooking_time,
+        ingredients,
+        tags,
+    ):
         super().__init__(name, text, image, cooking_time, ingredients, tags)
 
         self.author = author
@@ -50,7 +63,16 @@ class RecipeCreator(BaseService):
 
 
 class RecipeUpdater(BaseService):
-    def __init__(self, recipe, name=None, text=None, image=None, cooking_time=None, ingredients=None, tags=None):
+    def __init__(
+        self,
+        recipe,
+        name=None,
+        text=None,
+        image=None,
+        cooking_time=None,
+        ingredients=None,
+        tags=None,
+    ):
         super().__init__(name, text, image, cooking_time, ingredients, tags)
 
         self.recipe = recipe

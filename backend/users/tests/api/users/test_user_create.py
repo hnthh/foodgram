@@ -39,7 +39,11 @@ def test_invalid_payload(as_anon, user):
 
     as_anon.post(
         URL,
-        {'email': 'testuser@test.com', 'username': 'TestUser', 'password': 'wert1234gsa$'},
+        {
+            'email': 'testuser@test.com',
+            'username': 'TestUser',
+            'password': 'wert1234gsa$',
+        },
         expected_status=400,
     )
 
@@ -54,7 +58,9 @@ def test_invalid_payload(as_anon, user):
         },
         expected_status=400,
     )
-    assert got['email'][0] == 'Пользователь с такой почтой уже зарегистрирован на платформе.'
+    assert got['email'][0] == (
+        'Пользователь с такой почтой уже зарегистрирован на платформе.'
+    )
 
     got = as_anon.post(
         URL,
@@ -67,7 +73,9 @@ def test_invalid_payload(as_anon, user):
         },
         expected_status=400,
     )
-    assert got['username'][0] == 'Пользователь с таким логином уже зарегистрирован на платформе.'
+    assert got['username'][0] == (
+        'Пользователь с таким логином уже зарегистрирован на платформе.'
+    )
 
     got = as_anon.post(
         URL,

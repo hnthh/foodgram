@@ -36,7 +36,9 @@ class UserQuerySet(DefaultUserQuerySet):
             return self.for_anon()
 
         return self.annotate(
-            is_subscribed=Exists(Subscribe.objects.filter(user=user, author=OuterRef('pk'))),
+            is_subscribed=Exists(
+                Subscribe.objects.filter(user=user, author=OuterRef('pk')),
+            ),
             recipes_count=Count('recipes'),
         )
 
@@ -59,13 +61,23 @@ class User(AbstractUser):
         unique=True,
         max_length=150,
         validators=[username_validator],
-        error_messages={'unique': 'Пользователь с таким логином уже зарегистрирован на платформе.'},
+        error_messages={
+            'unique': (
+                'Пользователь с таким логином уже '
+                'зарегистрирован на платформе.'
+            ),
+        },
     )
     email = models.EmailField(
         'почта',
         unique=True,
         max_length=150,
-        error_messages={'unique': 'Пользователь с такой почтой уже зарегистрирован на платформе.'},
+        error_messages={
+            'unique': (
+                'Пользователь с такой почтой уже '
+                'зарегистрирован на платформе.'
+            ),
+        },
     )
     first_name = models.CharField('имя', max_length=150)
     last_name = models.CharField('фамилия', max_length=150)

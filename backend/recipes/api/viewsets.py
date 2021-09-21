@@ -33,12 +33,24 @@ class RecipeViewSet(AppViewSet):
         'destroy': IsAuthor,
     }
     favorite_method_dispatcher = {
-        'get': lambda self, *args: self._get_action_method(AddToFavorites, *args),
-        'delete': lambda self, *args: self._delete_action_method(DeleteFromFavorites, *args),
+        'get': lambda self, *args: self._get_action_method(
+            AddToFavorites,
+            *args,
+        ),
+        'delete': lambda self, *args: self._delete_action_method(
+            DeleteFromFavorites,
+            *args,
+        ),
     }
     shopping_cart_method_dispatcher = {
-        'get': lambda self, *args: self._get_action_method(AddToShoppingCart, *args),
-        'delete': lambda self, *args: self._delete_action_method(DeleteFromShoppingCart, *args),
+        'get': lambda self, *args: self._get_action_method(
+            AddToShoppingCart,
+            *args,
+        ),
+        'delete': lambda self, *args: self._delete_action_method(
+            DeleteFromShoppingCart,
+            *args,
+        ),
     }
 
     def get_queryset(self):
@@ -83,7 +95,10 @@ class RecipeViewSet(AppViewSet):
     def download_shopping_cart(self, request):
         from recipes.services import ShoppingCartPDFCreator
 
-        pdf = ShoppingCartPDFCreator(user=request.user, font='IBMPlexMono-ExtraLightItalic')()
+        pdf = ShoppingCartPDFCreator(
+            user=request.user,
+            font='IBMPlexMono-ExtraLightItalic',
+        )()
 
         return FileResponse(
             pdf,

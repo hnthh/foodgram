@@ -17,7 +17,10 @@ class BaseDeleteService:
         self._delete()
 
     def valid_data(self):
-        obj = self._model.objects.filter(user=self._user, recipe=self._recipe).first()
+        obj = self._model.objects.filter(
+            user=self._user,
+            recipe=self._recipe,
+        ).first()
         if obj is None:
             raise DoesNotExistError(
                 {'errors': _(f'{self._model.__name__}Object does not exist')},

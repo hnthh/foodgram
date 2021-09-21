@@ -8,7 +8,10 @@ URL = '/api/recipes/'
 
 def test_ok(as_user, as_admin, ingredients, tags):
     recipe, _ = create_recipes(as_user, ingredients, tags)
-    as_admin.get(f'/api/recipes/{recipe.id}/shopping_cart/', expected_status=201)
+    as_admin.get(
+        f'/api/recipes/{recipe.id}/shopping_cart/',
+        expected_status=201,
+    )
 
     got = as_admin.get(URL)
     assert got['count'] == 2

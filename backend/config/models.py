@@ -35,12 +35,15 @@ class DefaultQuerySet(models.QuerySet):
 
 class DefaultManager(models.Manager):
     def __getattr__(self, name):
-        if hasattr(self._queryset_class, 'Q') and hasattr(self._queryset_class.Q, name):
+        if hasattr(self._queryset_class, 'Q') and hasattr(
+            self._queryset_class.Q, name,
+        ):
             return getattr(self.get_queryset(), name)
 
         raise AttributeError(
             f'Nor {self.__class__}, nor {self._queryset_class.__name__} or '
-            f'{self._queryset_class.__name__}.Q does not have `{name}` defined.',
+            f'{self._queryset_class.__name__}.Q '
+            'does not have `{name}` defined.',
         )
 
 

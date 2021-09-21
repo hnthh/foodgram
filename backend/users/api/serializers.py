@@ -16,7 +16,14 @@ class UserSerializer(DjoserUserSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'is_subscribed')
+        fields = (
+            'id',
+            'email',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed',
+        )
 
     def to_representation(self, user):
         request = self.context['request']
@@ -30,7 +37,14 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'password')
+        fields = (
+            'id',
+            'email',
+            'username',
+            'first_name',
+            'last_name',
+            'password',
+        )
 
 
 class SubscriptionSerializer(UserSerializer):
@@ -64,13 +78,13 @@ class SubscribeSerializer(ModelSerializer):
             UniqueTogetherValidator(
                 queryset=Subscribe.objects.all(),
                 fields=('user', 'author'),
-                message='Subscription already exists',
+                message='Подписка уже существует',
             ),
         )
 
     def validate(self, data):
         if data['user'] == data['author']:
-            raise serializers.ValidationError(_('You cannot subscribe to yourself'))
+            raise serializers.ValidationError('Нельзя подписаться на себя')
         return data
 
     def create(self, data):

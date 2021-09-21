@@ -9,8 +9,22 @@ class UserAdmin(BaseUserAdmin):
     readonly_fields = ('date_joined', 'last_login')
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Персональные данные', {'fields': ('first_name', 'last_name', 'email')}),
-        ('Права', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        (
+            'Персональные данные',
+            {'fields': ('first_name', 'last_name', 'email')},
+        ),
+        (
+            'Права',
+            {
+                'fields': (
+                    'is_active',
+                    'is_staff',
+                    'is_superuser',
+                    'groups',
+                    'user_permissions',
+                ),
+            },
+        ),
         ('Важные даты', {'fields': ('last_login', 'date_joined')}),
     )
     empty_value_display = '—'

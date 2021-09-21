@@ -34,7 +34,11 @@ class MultiPermissionMixin:
         return (permission() for permission in permissions)
 
 
-class ReadOnlyAppViewSet(MultiSerializerMixin, MultiPermissionMixin, ReadOnlyModelViewSet):
+class ReadOnlyAppViewSet(
+    MultiSerializerMixin,
+    MultiPermissionMixin,
+    ReadOnlyModelViewSet,
+):
     pass
 
 

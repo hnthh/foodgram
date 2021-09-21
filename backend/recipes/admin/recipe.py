@@ -37,7 +37,9 @@ class RecipeAdmin(AppAdmin):
     )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).for_admin_page().with_last_update()
+        return super().get_queryset(
+            request,
+        ).for_admin_page().with_last_update()
 
     def get_ordering(self, request):
         return ['-favourites']

@@ -42,8 +42,12 @@ class RecipeQuerySet(DefaultQuerySet):
             return self.for_anon()
 
         return self.annotate(
-            is_favorited=Exists(Favorite.objects.filter(recipe=OuterRef('pk'), user=user)),
-            is_in_shopping_cart=Exists(ShoppingCart.objects.filter(recipe=OuterRef('pk'), user=user)),
+            is_favorited=Exists(
+                Favorite.objects.filter(recipe=OuterRef('pk'), user=user),
+            ),
+            is_in_shopping_cart=Exists(
+                ShoppingCart.objects.filter(recipe=OuterRef('pk'), user=user),
+            ),
         )
 
     def for_admin_page(self):
@@ -57,7 +61,11 @@ class RecipeQuerySet(DefaultQuerySet):
 class Recipe(TimestampedModel):
     objects = RecipeQuerySet.as_manager()
 
-    author = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='автор')
+    author = models.ForeignKey(
+        'users.User',
+        on_delete=models.CASCADE,
+        verbose_name='автор',
+    )
     name = models.CharField('название', max_length=256)
     text = models.TextField('описание рецепта')
     image = models.ImageField('изображение', upload_to='recipes/images/')
@@ -75,7 +83,10 @@ class Recipe(TimestampedModel):
         verbose_name_plural = 'рецепты'
         default_related_name = 'recipes'
         constraints = (
-            models.UniqueConstraint(fields=('author', 'name'), name='unique_author_recipename'),
+            models.UniqueConstraint(
+                fields=('author', 'name'),
+                name='unique_author_recipename',
+            ),
         )
         ordering = ('-created', '-modified')
 

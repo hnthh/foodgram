@@ -20,8 +20,14 @@ class Subscribe(TimestampedModel):
         verbose_name = 'подписка'
         verbose_name_plural = 'подписки'
         constraints = (
-            models.CheckConstraint(name='user_not_author', check=~models.Q(user=F('author'))),
-            models.UniqueConstraint(fields=('user', 'author'), name='unique_user_author'),
+            models.CheckConstraint(
+                name='user_not_author',
+                check=~models.Q(user=F('author')),
+            ),
+            models.UniqueConstraint(
+                fields=('user', 'author'),
+                name='unique_user_author',
+            ),
         )
 
     def __str__(self):

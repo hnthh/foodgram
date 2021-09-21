@@ -18,7 +18,9 @@ def test_ok(as_user, user, ingredients, tags):
             {'id': another_ingredient.id, 'amount': 76},
         ],
         'tags': [tag.pk, another_tag.pk],
-        'image': 'R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
+        'image': (
+            'R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+        ),
     }
 
     got = as_user.post(URL, data, format='json')
