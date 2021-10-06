@@ -55,9 +55,7 @@ Go to `http://{HOST}/admin/`, log in as a superuser and make sure that the data 
 
 ## Foodgram available pages
 
-1. [http://hnthh.ml/](http://hnthh.ml/) — Home page.
-2. [http://hnthh.ml/api/](http://hnthh.ml/api/) — API root.
-3. [http://hnthh.ml/api/docs/redoc/](http://hnthh.ml/api/docs/redoc/) — ReDoc.
+[http://hnthh.ml/](http://hnthh.ml/) — Home page.
 
 ## Thankfulnesss
 
