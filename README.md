@@ -21,7 +21,6 @@ python -m pip install pip-tools
 make deps
 ```
 ```
-./manage.py makemigrations
 ./manage.py migrate
 ./manage.py createsuperuser
 ```
