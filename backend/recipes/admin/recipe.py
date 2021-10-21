@@ -21,6 +21,7 @@ class RecipeAdmin(AppAdmin):
     list_display = (
         'name',
         'author',
+        'last_update',
         'count_favorites',
     )
     list_filter = (
@@ -35,9 +36,18 @@ class RecipeAdmin(AppAdmin):
         'tags',
     )
 
+    def get_queryset(self, request):
+        return super().get_queryset(
+            request,
+        ).for_admin_page().with_last_update().distinct()
+
     def get_ordering(self, request):
         return ['-favourites']
 
+    @admin.display(description='последнее обновление')
+    def last_update(self, recipe):
+        return recipe.last_update
+
     @admin.display(description='добавлений в избранное')
     def count_favorites(self, recipe):
-        return recipe.favourites.count()
+        return recipe.count_favorites

@@ -1,5 +1,5 @@
 from config.models import DefaultQuerySet, TimestampedModel, models
-from django.db.models import Exists, OuterRef, Q, Value
+from django.db.models import Count, Exists, OuterRef, Q, Value
 from recipes.models import Favorite
 
 
@@ -49,6 +49,9 @@ class RecipeQuerySet(DefaultQuerySet):
                 ShoppingCart.objects.filter(recipe=OuterRef('pk'), user=user),
             ),
         )
+
+    def for_admin_page(self):
+        return self.annotate(count_favorites=Count('favourites__recipe'))
 
     def create_with_ingredients_and_tags(self, **data):
         from recipes.services import RecipeCreator
