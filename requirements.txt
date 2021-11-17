@@ -116,7 +116,7 @@ social-auth-app-django==4.0.0
     # via djoser
 social-auth-core==4.1.0
     # via social-auth-app-django
-sqlparse==0.4.1
+sqlparse==0.4.2
     # via django
 uritemplate==3.0.1
     # via coreapi
